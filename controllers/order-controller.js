@@ -64,7 +64,7 @@ exports.checkoutOrder = async (req, res) => {
 
                 let mailOptions = {
                     from : process.env.EMAIL_HOST,
-                    to : req.user.email,
+                    to : process.env.EMAIL_HOST,
                     subject : "Orders",
                     text : JSON.stringify(order)
                 }

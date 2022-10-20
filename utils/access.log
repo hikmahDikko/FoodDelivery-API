@@ -846,3 +846,7 @@
 [0mPOST /api/v1/carts [32m200[0m 986.234 ms - 308[0m
 [0mPOST /api/v1/orders/checkout [32m201[0m 5584.512 ms - 885[0m
 [0mPOST /api/v1/orders/checkout [33m400[0m 335.056 ms - 14[0m
+[0mPOST /api/v1/carts [32m200[0m 1614.370 ms - 308[0m
+[0mPOST /api/v1/orders/checkout [32m201[0m 5925.856 ms - 885[0m
+[0mGET /api/v1/orders [32m200[0m 726.142 ms - 278[0m
+[0mPOST /api/v1/orders/checkout [33m400[0m 346.076 ms - 14[0m

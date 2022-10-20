@@ -8,7 +8,7 @@ const { getOrders, checkoutOrder } = orderController;
 
 router
     .route("/")
-    .get(auth, getOrders);
+    .get(auth, checkUser("vendor"), getOrders);
 
 router.post("/checkout", auth, checkoutOrder);
 
