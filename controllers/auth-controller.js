@@ -193,8 +193,8 @@ exports.resetPassword = async (req, res, next) => {
             req.body.password,
             req.body.confirmPassword
         );
-
-        if(req.body.password.length < 6 && req.body.password !== req.body.confirmPassword) {
+        
+        if(req.body.password.length < 6 || req.body.password !== req.body.confirmPassword) {
             return res.status(400).send("Ensure password and confirm password are of the same characters, nothing less than 6 characters");
         }
         return res.status(200).json(resetPasswordService);

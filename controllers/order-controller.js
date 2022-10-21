@@ -22,7 +22,8 @@ exports.checkoutOrder = async (req, res) => {
                 amount : cart.amount, 
                 email : user.email, 
                 fullname : user.fullname, 
-                phone_number : user.phoneNumber 
+                phone_number : user.phoneNumber,
+                tx_ref: "hy_ " + Math.floor((Math.random() * 1000000000) + 1) 
             };
             
             const response = await flw.Charge.card(payload);
