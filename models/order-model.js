@@ -30,7 +30,7 @@ orderSchema.pre(/^find/, function (next) {
     this.populate([
         {
         path: "cartId",
-        select: "productId name quantity amount",
+        select: "productName quantity amount",
         }
     ]);
     next();

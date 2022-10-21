@@ -20,7 +20,7 @@ exports.createCart = async (req, res) => {
         const cart = await Cart.create({
             userId,
             productId,
-            ProductName : prod.name,
+            productName : prod.name,
             quantity,
             unitPrice,
             amount,

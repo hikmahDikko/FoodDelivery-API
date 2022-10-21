@@ -872,3 +872,13 @@
 [0mPATCH /api/v1/auths/reset-password [33m400[0m 484.913 ms - 95[0m
 [0mPATCH /api/v1/auths/reset-password [32m200[0m 481.512 ms - 58[0m
 [0mPOST /api/v1/orders/checkout [33m400[0m 383.839 ms - 14[0m
+[0mPOST /api/v1/carts [32m200[0m 864.426 ms - 308[0m
+[0mPOST /api/v1/orders/checkout [32m201[0m 7211.042 ms - 834[0m
+[0mPOST /api/v1/carts [32m200[0m 2036.134 ms - 308[0m
+[0mPOST /api/v1/orders/checkout [32m201[0m 5377.685 ms - 880[0m
+[0mPOST /api/v1/orders/checkout [33m400[0m 284.545 ms - 14[0m
+[0mPOST /api/v1/orders/checkout [33m400[0m 287.622 ms - 14[0m
+[0mPOST /api/v1/carts [32m200[0m 3400.200 ms - 308[0m
+[0mPOST /api/v1/orders/checkout [32m201[0m 5826.478 ms - 882[0m
+[0mPOST /api/v1/carts [32m200[0m 1396.672 ms - 339[0m
+[0mPOST /api/v1/orders/checkout [32m201[0m 5782.079 ms - 866[0m

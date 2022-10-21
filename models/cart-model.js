@@ -12,6 +12,9 @@ const cartSchema = new mongoose.Schema({
         ref : "Product",
         required : [true, "Please enter the product ID"]
     },
+    productName : {
+        type : String
+    },
     quantity : {
         type : Number,
         required : [true, "Please enter the quantity number"],

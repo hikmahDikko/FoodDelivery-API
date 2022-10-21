@@ -45,7 +45,7 @@ exports.resizeImage = async (req, res, next) => {
       if (id) {
         const product = await Product.findById(id);
         if (!product) {
-          return res,status(400),send(`There is no product with the is ${req.params.id}`);
+          return res,status(400),send(`There is no product with the ${req.params.id}`);
         }
         productName = `${product.name}-${timeStamp}.jpeg`;
       }
