@@ -1,4 +1,4 @@
-const Product = require("../models/product-model");
+const Food = require("../models/food-model");
 const multer = require("multer");
 const sharp = require("sharp");
 const QueryMethod = require("../utils/query");
@@ -6,7 +6,7 @@ const QueryMethod = require("../utils/query");
 //handle errors
 const handleError = (err) => {
     console.log(err.message);
-    let errors = { owner : "", name : "", description : "", price : "", quantity : "", productImage : "", category : ""};
+    let errors = { vendor : "", name : "", description : "", price : "", quantity : "", foodImage : "", category : ""};
     
     //validate errors
     if(err.message.includes('Product validation failed')) {
@@ -35,43 +35,43 @@ const uploadImage = multer({
     fileFilter : multerFilter
 });
 
-exports.uploadProductImage = uploadImage.single("productImage");
+exports.uploadFoodImage = uploadImage.single("foodImage");
 
 exports.resizeImage = async (req, res, next) => {
     if (req.file) {
       let timeStamp = Date.now();
       let id = req.params.id;
-      let productName;
+      let foodName;
       if (id) {
-        const product = await Product.findById(id);
-        if (!product) {
-          return res,status(400),send(`There is no product with the ${req.params.id}`);
+        const food = await Food.findById(id);
+        if (!food) {
+          return res.status(400).send(`There is no product with the ${req.params.id}`);
         }
-        productName = `${product.name}-${timeStamp}.jpeg`;
+        foodName = `${food.name}-${timeStamp}.jpeg`;
       }
-      productName = `${req.body.name}-${timeStamp}.jpeg`;
-      req.body.productImage = productName;
+      foodName = `${req.body.name}-${timeStamp}.jpeg`;
+      req.body.foodImage = foodName;
   
       await sharp(req.file.buffer)
         .resize(320, 240)
         .toFormat("jpeg")
         .jpeg({ quality: 80 })
-        .toFile(`public/product/img/${productName}`);
+        .toFile(`public/food/img/${foodName}`);
     }
   
     next();
   };
 
 //Upload a product
-exports.uploadProduct = async (req, res) => {
+exports.uploadFood = async (req, res) => {
     try {
-        req.body.owner = req.user._id;
-        const product = await Product.create(req.body);
+        req.body.vendor = req.user._id;
+        const food = await Food.create(req.body);
         return res.status(200).send({
             status : true,
             meassage : "Successfully uploaded a product",
             data : {
-                product
+                food
             }
         });
           
@@ -83,18 +83,18 @@ exports.uploadProduct = async (req, res) => {
 
 
 //Get all Products
-exports.getAllProducts = async (req, res) => {
+exports.getAllFoods = async (req, res) => {
     try {
-        let queriedProducts = new QueryMethod(Product.find(), req.query)
+        let queriedFoods = new QueryMethod(Food.find(), req.query)
             .sort()
             .filter()
             .limit()
             .paginate();
-        let product = await queriedProducts.query;
+        let food = await queriedFoods.query;
         res.status(200).json({
             status: "success",
-            results: product.length,
-            data: product,
+            results: food.length,
+            data: food,
       }); 
     } catch (error) {
         const errors = handleError(error)
@@ -103,10 +103,10 @@ exports.getAllProducts = async (req, res) => {
 }
 
 //Get a product
-exports.getOneProduct = async (req, res) => {
+exports.getOneFood = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await Product.findById(id);
+        const product = await Food.findById(id);
         res.status(200).json({
             status: "success",
             data: {
@@ -120,31 +120,33 @@ exports.getOneProduct = async (req, res) => {
 };
 
 //Update a Product
-exports.updateProduct = async (req, res) => {
+exports.updateFood = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
-        if (!product) {
+        const food = await Food.findById(req.params.id);
+        if (!food) {
           return res.status(400).json({
             status: "fail",
             message: `There is no product from the vendor with the ID ${req.params.id}`,
           });
         }
-        const description = req.body.description === undefined ? product.description : req.body.description;
+        const description = req.body.description === undefined ? food.description : req.body.description;
         const name =
-          req.body.name === undefined ? product.name : req.body.name;
+          req.body.name === undefined ? food.name : req.body.name;
         const quantity =
-          req.body.quantity === undefined ? product.quantity : req.body.quantity;
+          req.body.quantity === undefined ? food.quantity : req.body.quantity;
         const price =
-          req.body.price === undefined ? product.price : req.body.price;
-        const productImage =
-          req.body.productImage === undefined ? product.productImage : req.body.productImage;
-        const update = { name, description, price, quantity, productImage };
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, update);
+          req.body.price === undefined ? food.price : req.body.price;
+        const foodImage = 
+          req.body.foodImage === undefined ? food.foodImage : req.body.foodImage;
+        const categogy =
+          req.body.categogy === undefined ? food.categogy : req.body.categogy;
+        const update = { name, description, price, quantity, foodImage, categogy };
+        const updatedFood = await Food.findByIdAndUpdate(req.params.id, update);
         res.status(200).json({
-          status: "success",
-          data: {
-            product: updatedProduct,
-          },
+            status: "success",
+            data: {
+                food: updatedFood,
+            },
         });
     } catch (error) {
         const errors = handleError(error)
@@ -153,12 +155,12 @@ exports.updateProduct = async (req, res) => {
 }
 
 //Delete a product
-exports.deleteProduct = async (req, res) => {
+exports.deleteFood = async (req, res) => {
     try {
         
-        const delProduct = await Product.findByIdAndDelete(req.params.id);
+        const delFood = await Food.findByIdAndDelete(req.params.id);
     
-        if(delProduct) {
+        if(delFood) {
             return res.status(201).send({
                 status : true,
                 message : "Product successfully deleted"

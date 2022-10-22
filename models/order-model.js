@@ -20,7 +20,7 @@ orderSchema.pre(/^find/, function (next) {
     this.populate([
         {
         path: "userId",
-        select: "fullname address phoneNumber email",
+        select: "fullName address phoneNumber email",
         }
     ]);
     next();

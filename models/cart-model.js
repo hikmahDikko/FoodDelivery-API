@@ -7,9 +7,9 @@ const cartSchema = new mongoose.Schema({
         ref : "User",
         required : [true, "Please input the product vendor ID"]
     },
-    productId : {
+    foodId : {
         type : ObjectID,
-        ref : "Product",
+        ref : "Food",
         required : [true, "Please enter the product ID"]
     },
     productName : {
@@ -32,7 +32,7 @@ const cartSchema = new mongoose.Schema({
 
 cartSchema.pre("save", function (next) {
     this.populate({
-      path: "productId",
+      path: "foodId",
       select: "name",
     });
     next();

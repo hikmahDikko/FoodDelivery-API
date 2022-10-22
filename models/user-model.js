@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { isEmail } = require("validator");
 
 const userSchema = new mongoose.Schema({
-    fullname : {
+    fullName : {
         type : String,
         required : [true, "Please enter a Fullname"],
         minlength : [6, "Fullname should have more than 6 characters"],

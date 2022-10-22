@@ -1,15 +1,15 @@
 const Cart = require("../models/cart-model");
-const Product = require("../models/product-model");
+const Food = require("../models/food-model");
 const Order = require("../models/order-model");
 const QueryMethod = require("../utils/query");
 
 //Create a Cart
 exports.createCart = async (req, res) => {
     try {
-        const { productId, quantity } = req.body;
+        const { foodId, quantity } = req.body;
         const userId = req.user.id;
         
-        const prod = await Product.findById(productId);
+        const prod = await Food.findById(foodId);
         unitPrice = prod.price;
         
         if (!prod) {
@@ -19,7 +19,7 @@ exports.createCart = async (req, res) => {
         amount = quantity * unitPrice;
         const cart = await Cart.create({
             userId,
-            productId,
+            foodId,
             productName : prod.name,
             quantity,
             unitPrice,
@@ -34,9 +34,11 @@ exports.createCart = async (req, res) => {
                 productQuantity : [cart.quantity],
                 totalAmount: cart.amount,
             });
+           
         } else {
             let cart_Id = [...myOrder.cartId, cart.id];
             let totalAmount = myOrder.totalAmount + amount;
+            
             const update = {
                 totalAmount,
                 cartId: cart_Id,
@@ -114,7 +116,7 @@ exports.getAllCarts = async (req, res) => {
     
         amount = quantity * cart.unitPrice;
         const myOrder = await Order.findOne({ userId: req.user.id });
-        let totalAmount = myOrder.totalAmount - cart.unitPrice;
+        let totalAmount = myOrder.totalAmount + cart.unitPrice;
         let newAmount = totalAmount + amount;
         const update = { amount, quantity };
     

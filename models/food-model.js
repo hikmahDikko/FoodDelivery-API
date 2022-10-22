@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-    owner : {
+const foodSchema = new mongoose.Schema({
+    vendor : {
         type: mongoose.Schema.ObjectId,
         ref : "User",
         required: [true, "Please enter your ID to upload a product"],
@@ -22,12 +22,12 @@ const productSchema = new mongoose.Schema({
         type : String,
         required : [true, "Please enter the product category"],
     },
-    productImage : {
+    foodImage : {
         type : String,
         required : [true, "Please upload a product image"],
     }
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Food = mongoose.model("Food", foodSchema);
 
-module.exports = Product;
+module.exports = Food;

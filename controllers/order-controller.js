@@ -3,7 +3,6 @@ const Flutterwave = require("flutterwave-node-v3");
 const Order = require("../models/order-model");
 const nodemailer = require("nodemailer");
 const Cart = require("../models/cart-model");
-const User = require("../models/user-model");
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
@@ -13,13 +12,14 @@ exports.checkoutOrder = async (req, res) => {
         let payload = req.body;
         
         let cart = await Cart.findOne({userId});
+        let order = await Order.findOne({userId});
         let user = req.user;
         
-        if(cart) {
+        if(order) {
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
-                amount : cart.amount, 
+                amount : order.totalAmount, 
                 email : user.email, 
                 fullname : user.fullname, 
                 phone_number : user.phoneNumber,

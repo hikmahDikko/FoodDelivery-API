@@ -13,7 +13,7 @@ const maxAge = 3 * 24 * 60 * 60;
 //Creat account for user
 exports.signUp = async (req, res) => {
     try{
-        const {fullname, phoneNumber, address, password, confirmPassword, email, role} = req.body;
+        const {fullName, phoneNumber, address, password, confirmPassword, email, role} = req.body;
         if(password !== confirmPassword){
             return res.status(400).json({message : "Wrong Password Confirmation input"})
         }
@@ -22,7 +22,7 @@ exports.signUp = async (req, res) => {
         if(password === confirmPassword && password.length > 5){
             const hash = await bcrypt.hash(password, salt);
             const user = await User.create({
-                fullname, 
+                fullName, 
                 phoneNumber, 
                 address, 
                 password : hash,

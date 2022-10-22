@@ -41,6 +41,38 @@ exports.getOne = async (req, res) => {
     }
 };
 
+exports.updateUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+          return res.status(400).json({
+            status: "fail",
+            message: `There is no user with the ID ${req.params.id}`,
+          });
+        }
+        const fullName = req.body.fullName === undefined ? user.fullName : req.body.fullName;
+        const email =
+          req.body.email === undefined ? user.email : req.body.email;
+        const phoneNumber =
+          req.body.phoneNumber === undefined ? user.phoneNumber : req.body.phoneNumber;
+        const address =
+          req.body.address === undefined ? user.address : req.body.paddress;
+        const password =
+          req.body.password === undefined ? user.password : req.body.password;
+        const update = { fullName, email, password, address, phoneNumber };
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, update);
+        res.status(200).json({
+          status: "success",
+          data: {
+            product: updatedUser,
+          },
+        });
+    } catch (error) {
+        const errors = handleError(error)
+        res.status(400).json({ errors });
+    }
+}
+
 //Delete user account
 exports.deleteUser = async (req, res) => {
     try {
