@@ -1,10 +1,10 @@
-const Cart = require("../models/cart-model");
+const FavCart = require("../models/fav-model");
 const Food = require("../models/food-model");
-const Order = require("../models/order-model");
-const QueryMethod = require("../utils/query");
+const  FavOrder = require("../models/favOrder-model");
+const QueryMethod = require("../utils/query")
 
 //Create a Cart
-exports.createCart = async (req, res) => {
+exports.createFavCart = async (req, res) => {
     try {
         const { foodId, quantity } = req.body;
         const userId = req.user.id;
@@ -17,7 +17,7 @@ exports.createCart = async (req, res) => {
         }
 
         amount = quantity * unitPrice;
-        const cart = await Cart.create({
+        const cart = await FavCart.create({
             userId,
             foodId,
             productName : prod.name,
@@ -26,9 +26,9 @@ exports.createCart = async (req, res) => {
             amount,
         });
 
-        const myOrder = await Order.findOne({ userId: req.user.id });
+        const myOrder = await  FavOrder.findOne({ userId: req.user.id });
         if (!myOrder) {
-            await Order.create({
+            await FavOrder.create({
                 userId: req.user.id,
                 cartId: [cart.id],
                 productQuantity : [cart.quantity],
@@ -43,7 +43,7 @@ exports.createCart = async (req, res) => {
                 totalAmount,
                 cartId: cart_Id,
             };
-            const order = await Order.findOneAndUpdate(
+            const order = await  FavOrder.findOneAndUpdate(
                 { userId: req.user.id },
                 { $set: update },
                 { new: true }
@@ -61,9 +61,9 @@ exports.createCart = async (req, res) => {
 }
 
 //Get all Carts
-exports.getAllCarts = async (req, res) => {
+exports.getAllFavCarts = async (req, res) => {
     try { 
-        let queriedCarts = new QueryMethod(Cart.find(), req.query)
+        let queriedCarts = new QueryMethod(FavCart.find(), req.query)
           .sort()
           .filter()
           .limit()
@@ -80,9 +80,9 @@ exports.getAllCarts = async (req, res) => {
   };
   
   //Get a Cart
-  exports.getOneCart = async (req, res) => {
+  exports.getOneFavCart = async (req, res) => {
       try {
-          const cart = await Cart.findById(req.params.id);
+          const cart = await FavCart.findById(req.params.id);
         
           if (!cart) {
             return res.status(400).send(`There is no cart with the id ${req.params.id}`);
@@ -102,9 +102,9 @@ exports.getAllCarts = async (req, res) => {
   };
   
   //Update Cart
-  exports.updateCart = async (req, res) => {
+  exports.updateFavCart = async (req, res) => {
       try { 
-        const cart = await Cart.findById(req.params.id);
+        const cart = await FavCart.findById(req.params.id);
         
         if (req.user.id !== cart.userId.toString()) {
             return res.status(403).send(`You are not authorized!!!!!!!`);
@@ -115,13 +115,13 @@ exports.getAllCarts = async (req, res) => {
         const quantity = req.body.quantity;
     
         amount = quantity * cart.unitPrice;
-        const myOrder = await Order.findOne({ userId: req.user.id });
+        const myOrder = await  FavOrder.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount + cart.unitPrice;
         console.log(myOrder.totalAmount, cart.unitPrice);
         let newAmount = totalAmount + amount;
         const update = { amount, quantity };
     
-        const updatedCart = await Cart.findByIdAndUpdate(
+        const updatedCart = await FavCart.findByIdAndUpdate(
             req.params.id,
             { $set: update },
             {
@@ -129,7 +129,7 @@ exports.getAllCarts = async (req, res) => {
             }
         );
     
-        await Order.findOneAndUpdate(
+        await  FavOrder.findOneAndUpdate(
             { userId: req.user.id },
             { $set: { totalAmount: newAmount } },
             { new: true }
@@ -146,14 +146,14 @@ exports.getAllCarts = async (req, res) => {
   };
   
   //Delete an Cart
-  exports.deleteCart = async (req, res) => {
+  exports.deleteFavCart = async (req, res) => {
       try {
-        const cart = await Cart.findById(req.params.id);
+        const cart = await FavCart.findById(req.params.id);
         if (!cart) {
             return res.status(400).send(`There is no cart with Id ${req.params.id}`)
         }
 
-        const myOrder = await Order.findOne({ userId: req.user.id });
+        const myOrder = await  FavOrder.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
         const cart_id = myOrder.cartId.filter(
             (id) => id.toString() !== cart._id.toString()
@@ -163,11 +163,11 @@ exports.getAllCarts = async (req, res) => {
             cartId: cart_id,
         };
 
-        await Cart.findByIdAndDelete(req.params.id);
+        await FavCart.findByIdAndDelete(req.params.id);
         if (cart_id.length === 0) {
-            await Order.findOneAndDelete({ userId: req.user.id });
+            await  FavOrder.findOneAndDelete({ userId: req.user.id });
         }
-        await Order.findOneAndUpdate(
+        await FavOrder.findOneAndUpdate(
             { userId: req.user.id },
             { $set: update },
             { new: true }
