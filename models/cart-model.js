@@ -5,14 +5,14 @@ const cartSchema = new mongoose.Schema({
     userId : {
         type : ObjectID,
         ref : "User",
-        required : [true, "Please input the product vendor ID"]
+        required : [true, "Please input the vendor,s ID"]
     },
     foodId : {
         type : ObjectID,
         ref : "Food",
-        required : [true, "Please enter the product ID"]
+        required : [true, "Please enter the food ID"]
     },
-    productName : {
+    foodName : {
         type : String
     },
     quantity : {
@@ -30,7 +30,7 @@ const cartSchema = new mongoose.Schema({
     timestamps : true
 });
 
-cartSchema.pre("save", function (next) {
+cartSchema.pre(/^find/, function (next) {
     this.populate({
       path: "foodId",
       select: "name",

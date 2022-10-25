@@ -4,27 +4,27 @@ const foodSchema = new mongoose.Schema({
     vendor : {
         type: mongoose.Schema.ObjectId,
         ref : "User",
-        required: [true, "Please enter your ID to upload a product"],
+        required: [true, "Please enter your ID to add to the food menu"],
     },
     name : {
         type : String,
-        required : [true, "Please enter the product name"],
+        required : [true, "Please enter the food name"],
     },
     description : {
         type : String,
-        required : [true, "Please enter the product description"]
+        required : [true, "Please enter the food description"]
     },
     price : {
         type : Number,
-        required : [true, "Please enter the amount of the product"]
+        required : [true, "Please enter the amount of the food"]
     },
     category : {
         type : String,
-        required : [true, "Please enter the product category"],
+        required : [true, "Please enter the food category"],
     },
     foodImage : {
         type : String,
-        required : [true, "Please upload a product image"],
+        required : [true, "Please upload the food image"],
     }
 });
 

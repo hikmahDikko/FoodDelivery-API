@@ -17,43 +17,49 @@ exports.createFavCart = async (req, res) => {
         }
 
         amount = quantity * unitPrice;
-        const cart = await FavCart.create({
-            userId,
-            foodId,
-            productName : prod.name,
-            quantity,
-            unitPrice,
-            amount,
-        });
-
-        const myOrder = await  FavOrder.findOne({ userId: req.user.id });
-        if (!myOrder) {
-            await FavOrder.create({
-                userId: req.user.id,
-                cartId: [cart.id],
-                productQuantity : [cart.quantity],
-                totalAmount: cart.amount,
+        const cart = await FavCart.findOne({foodId});
+        let cartItem;
+        if(!cart) {
+            cartItem = await FavCart.create({
+                userId,
+                foodId,
+                foodName : prod.name,
+                quantity,
+                unitPrice,
+                amount,
             });
-           
-        } else {
-            let cart_Id = [...myOrder.cartId, cart.id];
-            let totalAmount = myOrder.totalAmount + amount;
+            const myOrder = await FavOrder.findOne({ userId: req.user.id });
+            if (!myOrder) {
+                await FavOrder.create({
+                    userId: req.user.id,
+                    cartId: [cartItem.id],
+                    foodQuantity : [cartItem.quantity],
+                    totalAmount: cartItem.amount,
+                });
             
-            const update = {
-                totalAmount,
-                cartId: cart_Id,
-            };
-            const order = await  FavOrder.findOneAndUpdate(
-                { userId: req.user.id },
-                { $set: update },
-                { new: true }
-            );
-        }
+            } else {
+                let cart_Id = [...myOrder.cartId, cartItem.id];
+                let totalAmount = myOrder.totalAmount + amount;
+                
+                const update = {
+                    totalAmount,
+                    cartId: cart_Id,
+                };
+                const order = await FavOrder.findOneAndUpdate(
+                    { userId: req.user.id },
+                    { $set: update },
+                    { new: true }
+                );
+            }
+            res.status(200).json({
+                status: "success",
+                data: { cartItem },
+            });
         
-        res.status(200).json({
-            status: "success",
-            data: { cart },
-        });
+        }else if(cart || cart.foodId === req.body.foodId) {
+            
+            res.status(200).send("Item already exist in the cart, Please try update the item in the cart")
+        }
     } catch (error) {
         console.log(error)
         res.status(500).send(error);
@@ -117,7 +123,7 @@ exports.getAllFavCarts = async (req, res) => {
         amount = quantity * cart.unitPrice;
         const myOrder = await  FavOrder.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount + cart.unitPrice;
-        console.log(myOrder.totalAmount, cart.unitPrice);
+        
         let newAmount = totalAmount + amount;
         const update = { amount, quantity };
     

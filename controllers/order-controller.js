@@ -15,7 +15,7 @@ exports.checkoutOrder = async (req, res) => {
         let order = await Order.findOne({userId});
         let user = req.user;
         
-        if(order) {
+        if(order && cart) {
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
@@ -67,7 +67,7 @@ exports.checkoutOrder = async (req, res) => {
                     from : process.env.EMAIL_HOST,
                     to : process.env.EMAIL_HOST,
                     subject : "Orders",
-                    text : JSON.stringify(order)
+                    order
                 }
                 
                 mail.sendMail(mailOptions, function(error, info) {
@@ -80,8 +80,7 @@ exports.checkoutOrder = async (req, res) => {
                 return res.status(201).send({
                     status : "Payment successfully made",
                     message : "Your orders has been received",
-                    order,
-                    mailOptions
+                    order
                 })
                 } 
                 if(callValidate.status === 'error') {
@@ -124,5 +123,28 @@ exports.getOrders = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send(error);
+    }
+};
+
+
+exports.deleteOrder = async (req, res) => {
+    try {
+        const del = await Order.findByIdAndDelete(req.params.id);
+
+        if(del) {
+            return res.status(200).send({
+                status : true,
+                message : "Order successfully deleted"
+            });
+        }else{
+            return res.status(404).send({
+                status : false,
+                message : "Order details cannot be fetched"
+            })
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(404).send(error)
     }
 };

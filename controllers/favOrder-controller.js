@@ -15,7 +15,7 @@ exports.checkoutFavOrder = async (req, res) => {
         let order = await FavOrder.findOne({userId});
         let user = req.user;
         
-        if(cart) {
+        if(order && cart) {
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
@@ -80,8 +80,7 @@ exports.checkoutFavOrder = async (req, res) => {
                 return res.status(201).send({
                     status : "Payment successfully made",
                     message : "Your orders has been received",
-                    order,
-                    mailOptions
+                    order
                 })
                 } 
                 if(callValidate.status === 'error') {
@@ -124,5 +123,27 @@ exports.getFavOrders = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send(error);
+    }
+};
+
+exports.deleteFavOrder = async (req, res) => {
+    try {
+        const del = await FavOrder.findByIdAndDelete(req.params.id);
+
+        if(del) {
+            return res.status(200).send({
+                status : true,
+                message : "Order fron favorite successfully deleted"
+            });
+        }else{
+            return res.status(404).send({
+                status : false,
+                message : "Order favorite details cannot be fetched"
+            })
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(404).send(error)
     }
 };

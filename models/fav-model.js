@@ -12,7 +12,7 @@ const favCartSchema = new mongoose.Schema({
         ref : "Food",
         required : [true, "Please enter the product ID"]
     },
-    productName : {
+    foodName : {
         type : String
     },
     quantity : {
@@ -38,6 +38,6 @@ favCartSchema.pre("save", function (next) {
     next();
 });
 
-const FavCart = mongoose.model("Favorite", favCartSchema);
+const Favorite = mongoose.model("Favorite", favCartSchema);
 
-module.exports = FavCart;
+module.exports = Favorite;

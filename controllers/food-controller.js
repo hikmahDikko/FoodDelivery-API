@@ -163,16 +163,17 @@ exports.deleteFood = async (req, res) => {
         if(delFood) {
             return res.status(201).send({
                 status : true,
-                message : "Product successfully deleted"
+                message : "Food menu successfully deleted"
             });
         }else{
             return res.status(404).send({
                 status : false,
-                message : "Product cannot be fetched"
+                message : "Food menu cannot be fetched"
             })
         }
         
     } catch (error) {
+        console.log(error)
         const errors = handleError(error)
         res.status(400).json({ errors });
     }

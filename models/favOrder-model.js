@@ -8,7 +8,7 @@ const FavOrderSchema = new mongoose.Schema({
     },
     cartId : [{
         type : ObjectID,
-        ref : "Cart"
+        ref : "Favorite"
     }],
     totalAmount : {
         type : Number,
@@ -30,7 +30,7 @@ FavOrderSchema.pre(/^find/, function (next) {
     this.populate([
         {
         path: "cartId",
-        select: "productName quantity amount",
+        select: "foodName quantity amount",
         }
     ]);
     next();
