@@ -30,14 +30,6 @@ const favCartSchema = new mongoose.Schema({
     timestamps : true
 });
 
-favCartSchema.pre("save", function (next) {
-    this.populate({
-      path: "foodId",
-      select: "name",
-    });
-    next();
-});
-
 const Favorite = mongoose.model("Favorite", favCartSchema);
 
 module.exports = Favorite;

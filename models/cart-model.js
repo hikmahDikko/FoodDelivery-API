@@ -30,14 +30,6 @@ const cartSchema = new mongoose.Schema({
     timestamps : true
 });
 
-cartSchema.pre(/^find/, function (next) {
-    this.populate({
-      path: "foodId",
-      select: "name",
-    });
-    next();
-});
-
 const Cart = mongoose.model("Cart", cartSchema);
 
 module.exports = Cart;

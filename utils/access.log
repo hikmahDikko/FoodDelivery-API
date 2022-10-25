@@ -1318,3 +1318,8 @@
 [0mPATCH /api/v1/favorites/6357e4513bfe08b5035c3f8e [32m200[0m 1105.070 ms - 311[0m
 [0mGET /api/v1/favorites/6357e4513bfe08b5035c3f8e [32m200[0m 299.568 ms - 295[0m
 [0mDELETE /api/v1/favorites/6357e4513bfe08b5035c3f8e [32m200[0m 1259.285 ms - 58[0m
+[0mGET /api/v1/users [33m401[0m 189.490 ms - 47[0m
+[0mGET /api/v1/carts [32m200[0m 329.549 ms - 42[0m
+[0mPOST /api/v1/carts [32m200[0m 1889.734 ms - 297[0m
+[0mGET /api/v1/orders [32m200[0m 587.076 ms - 415[0m
+[0mGET /api/v1/orders [32m200[0m 541.955 ms - 355[0m
