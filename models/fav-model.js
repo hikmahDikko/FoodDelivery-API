@@ -5,19 +5,19 @@ const favCartSchema = new mongoose.Schema({
     userId : {
         type : ObjectID,
         ref : "User",
-        required : [true, "Please input the product vendor ID"]
+        required : [true, "Please input the food vendor ID"]
     },
     foodId : {
         type : ObjectID,
         ref : "Food",
-        required : [true, "Please enter the product ID"]
+        required : [true, "Please enter the food ID"]
     },
     foodName : {
         type : String
     },
     quantity : {
         type : Number,
-        required : [true, "Please enter the quantity number"],
+        required : [true, "Please enter the food quantity"],
         min : 1,
         default : 1
     },

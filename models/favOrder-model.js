@@ -36,6 +36,6 @@ FavOrderSchema.pre(/^find/, function (next) {
     next();
 });
 
-const FavOrder = mongoose.model("FaviriteOrder", FavOrderSchema);
+const FavoriteOrder = mongoose.model("FavoriteOrder", FavOrderSchema);
 
-module.exports = FavOrder;
+module.exports = FavoriteOrder;

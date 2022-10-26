@@ -6,6 +6,7 @@ const FavCart = require("../models/fav-model");
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
+//Checkout Ordered food items
 exports.checkoutFavOrder = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -47,7 +48,7 @@ exports.checkoutFavOrder = async (req, res) => {
                 
                 if(callValidate.status === 'success') {
                                     
-                let order = await FavOrder.findOne({userId});
+                let favOrder = await FavOrder.findOne({userId});
                 let cartItems = await FavCart.find({userId});
                 if (cartItems) {
                     cartItems.map(async cartItem => {
@@ -58,16 +59,16 @@ exports.checkoutFavOrder = async (req, res) => {
                 let mail = nodemailer.createTransport({
                     service : 'gmail',
                     auth : {
-                        user : process.env.EMAIL_HOST,
+                        user : process.env.HOST_EMAIL,
                         pass : process.env.EMAIL_PASS
                     }
                 });
 
                 let mailOptions = {
-                    from : process.env.EMAIL_HOST,
-                    to : process.env.EMAIL_HOST,
+                    from : process.env.HOST_EMAIL,
+                    to : process.env.VENDORS_EMAIL,
                     subject : "Orders",
-                    text : JSON.stringify(order)
+                    text : "Ordered favorite-items are as follows " + '\n' + favOrder
                 }
                 
                 mail.sendMail(mailOptions, function(error, info) {
@@ -80,7 +81,6 @@ exports.checkoutFavOrder = async (req, res) => {
                 return res.status(201).send({
                     status : "Payment successfully made",
                     message : "Your orders has been received",
-                    order
                 })
                 } 
                 if(callValidate.status === 'error') {
@@ -106,12 +106,13 @@ exports.checkoutFavOrder = async (req, res) => {
     }
 }
 
+//Get one cart in favorite
 exports.getOneFavOrder = async (req, res) => {
     try {
         const favOrder = await FavOrder.findById(req.params.id);
       
         if (!favOrder) {
-          return res.status(400).send(`There is no order with the id ${req.params.id}`);
+          return res.status(400).send(`There is no favorite-order with the id ${req.params.id}`);
         }
       
         if (req.user.id !== favOrder.userId.toString()) {
@@ -127,7 +128,8 @@ exports.getOneFavOrder = async (req, res) => {
     }
 };
 
-exports.getFavOrders = async (req, res) => {
+//Get all favorite orders
+exports.getAllFavOrders = async (req, res) => {
     const owner = req.user._id;
     try {
         const orders = await FavOrder.find({ owner : owner }).sort({ date : -1 });
@@ -140,22 +142,20 @@ exports.getFavOrders = async (req, res) => {
                 }
             })
         }
-        res.status(404).send("No orders found");
+        res.status(404).send("No favorite-orders found");
     } catch (error) {
         console.log(error)
         res.status(500).send(error);
     }
 };
 
+//Delete a favorite-order
 exports.deleteFavOrder = async (req, res) => {
     try {
         const del = await FavOrder.findByIdAndDelete(req.params.id);
 
         if(del) {
-            return res.status(204).send({
-                status : true,
-                message : "Order fron favorite successfully deleted"
-            });
+            return res.status(204);
         }else{
             return res.status(404).send({
                 status : false,

@@ -6,6 +6,7 @@ const Cart = require("../models/cart-model");
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
+//Checkout ordered foods
 exports.checkoutOrder = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -58,16 +59,16 @@ exports.checkoutOrder = async (req, res) => {
                 let mail = nodemailer.createTransport({
                     service : 'gmail',
                     auth : {
-                        user : process.env.EMAIL_HOST,
+                        user : process.env.HOST_EMAIL,
                         pass : process.env.EMAIL_PASS
                     }
                 });
 
                 let mailOptions = {
-                    from : process.env.EMAIL_HOST,
-                    to : process.env.EMAIL_HOST,
+                    from : process.env.HOST_EMAIL,
+                    to : process.env.VENDORS_EMAIL,
                     subject : "Orders",
-                    order
+                    text : "Ordered items are as follows " + '\n' + order
                 }
                 
                 mail.sendMail(mailOptions, function(error, info) {
@@ -80,7 +81,6 @@ exports.checkoutOrder = async (req, res) => {
                 return res.status(201).send({
                     status : "Payment successfully made",
                     message : "Your orders has been received",
-                    order
                 })
                 } 
                 if(callValidate.status === 'error') {
@@ -106,6 +106,7 @@ exports.checkoutOrder = async (req, res) => {
     }
 }
 
+//Get one Order
 exports.getOneOrder = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -127,7 +128,8 @@ exports.getOneOrder = async (req, res) => {
     }
 };
 
-exports.getOrders = async (req, res) => {
+//Get all ordered items
+exports.getAllOrders = async (req, res) => {
     const owner = req.user._id;
     try {
         const orders = await Order.find({ owner : owner }).sort({ date : -1 });
@@ -147,16 +149,13 @@ exports.getOrders = async (req, res) => {
     }
 };
 
-
+//Delet a order
 exports.deleteOrder = async (req, res) => {
     try {
         const del = await Order.findByIdAndDelete(req.params.id);
 
         if(del) {
-            return res.status(204).send({
-                status : true,
-                message : "Order successfully deleted"
-            });
+            return res.status(204);
         }else{
             return res.status(404).send({
                 status : false,

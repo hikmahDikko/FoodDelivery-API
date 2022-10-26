@@ -4,11 +4,11 @@ const { auth, checkUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getFavOrders, getOneFavOrder, checkoutFavOrder, deleteFavOrder } = favOrderController;
+const { getAllFavOrders, getOneFavOrder, checkoutFavOrder, deleteFavOrder } = favOrderController;
 
 router
     .route("/")
-    .get(auth, checkUser("vendor"), getFavOrders);
+    .get(auth, checkUser("vendor"), getAllFavOrders);
 
 router.post("/checkout", auth, checkoutFavOrder);
 

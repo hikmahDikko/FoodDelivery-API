@@ -19,6 +19,7 @@ const handleError = (err) => {
     return errors;
 };
 
+//Upload a food image
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
@@ -45,7 +46,7 @@ exports.resizeImage = async (req, res, next) => {
       if (id) {
         const food = await Food.findById(id);
         if (!food) {
-          return res.status(400).send(`There is no product with the ${req.params.id}`);
+          return res.status(400).send(`There is no food with the ${req.params.id}`);
         }
         foodName = `${food.name}-${timeStamp}.jpeg`;
       }
@@ -62,14 +63,14 @@ exports.resizeImage = async (req, res, next) => {
     next();
   };
 
-//Upload a product
+//Upload a food
 exports.uploadFood = async (req, res) => {
     try {
         req.body.vendor = req.user._id;
         const food = await Food.create(req.body);
         return res.status(200).send({
             status : true,
-            meassage : "Successfully uploaded a product",
+            meassage : "Successfully uploaded a food",
             data : {
                 food
             }
@@ -82,7 +83,7 @@ exports.uploadFood = async (req, res) => {
 }
 
 
-//Get all Products
+//Get all foods
 exports.getAllFoods = async (req, res) => {
     try {
         let queriedFoods = new QueryMethod(Food.find(), req.query)
@@ -102,7 +103,7 @@ exports.getAllFoods = async (req, res) => {
     }
 }
 
-//Get a product
+//Get a food
 exports.getOneFood = async (req, res) => {
     try {
         const { id } = req.params;
@@ -119,7 +120,7 @@ exports.getOneFood = async (req, res) => {
     }
 };
 
-//Update a Product
+//Update a food
 exports.updateFood = async (req, res) => {
     try {
         const food = await Food.findById(req.params.id);
@@ -154,17 +155,14 @@ exports.updateFood = async (req, res) => {
     }
 }
 
-//Delete a product
+//Delete a food
 exports.deleteFood = async (req, res) => {
     try {
         
         const delFood = await Food.findByIdAndDelete(req.params.id);
     
         if(delFood) {
-            return res.status(201).send({
-                status : true,
-                message : "Food menu successfully deleted"
-            });
+            return res.status(204);
         }else{
             return res.status(404).send({
                 status : false,
@@ -173,7 +171,6 @@ exports.deleteFood = async (req, res) => {
         }
         
     } catch (error) {
-        console.log(error)
         const errors = handleError(error)
         res.status(400).json({ errors });
     }

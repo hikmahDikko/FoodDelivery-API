@@ -5,7 +5,7 @@ const cartSchema = new mongoose.Schema({
     userId : {
         type : ObjectID,
         ref : "User",
-        required : [true, "Please input the vendor,s ID"]
+        required : [true, "Please input the vendor's ID"]
     },
     foodId : {
         type : ObjectID,
@@ -17,7 +17,7 @@ const cartSchema = new mongoose.Schema({
     },
     quantity : {
         type : Number,
-        required : [true, "Please enter the quantity number"],
+        required : [true, "Please enter the food quantity"],
         min : 1,
         default : 1
     },

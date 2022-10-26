@@ -4,11 +4,11 @@ const { auth, checkUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getOrders, getOneOrder, checkoutOrder, deleteOrder } = orderController;
+const { getAllOrders, getOneOrder, checkoutOrder, deleteOrder } = orderController;
 
 router
     .route("/")
-    .get(auth, checkUser("vendor"), getOrders);
+    .get(auth, checkUser("vendor"), getAllOrders);
 
 router.post("/checkout", auth, checkoutOrder);
 

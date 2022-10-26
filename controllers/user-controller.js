@@ -3,18 +3,18 @@ const handleError = require("../errorHandlers/errors");
 const QueryMethod = require("../utils/query");
 
 //Get All Users
-exports.getAll = async (req, res) => {
+exports.getAllUsers = async (req, res) => {
     try {
       let queriedUsers = new QueryMethod(User.find(), req.query)
         .sort()
         .filter()
         .limit()
         .paginate();
-    let user = await queriedUsers.query;
+    let users = await queriedUsers.query;
     res.status(200).json({
         status: "success",
-        results: user.length,
-        data: user,
+        results: users.length,
+        data: users,
     }); 
     } catch (error) {
         res.status(400).json({
@@ -25,7 +25,7 @@ exports.getAll = async (req, res) => {
 }
 
 //Get one user
-exports.getOne = async (req, res) => {
+exports.getOneUser = async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
       res.status(200).json({
@@ -41,6 +41,7 @@ exports.getOne = async (req, res) => {
     }
 };
 
+//Update a user account
 exports.updateUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -64,7 +65,7 @@ exports.updateUser = async (req, res) => {
         res.status(200).json({
           status: "success",
           data: {
-            product: updatedUser,
+            updatedUser
           },
         });
     } catch (error) {
@@ -79,10 +80,7 @@ exports.deleteUser = async (req, res) => {
         const del = await User.findByIdAndDelete(req.params.id);
 
         if(del) {
-            return res.status(201).send({
-                status : true,
-                message : "Account successfully deleted"
-            });
+            return res.status(204);
         }else{
             return res.status(404).send({
                 status : false,

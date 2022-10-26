@@ -10,7 +10,7 @@ const cookie = require("cookie-parser");
 //cookie-parser expiry date
 const maxAge = 3 * 24 * 60 * 60;
 
-//Creat account for user
+//Create account for user
 exports.signUp = async (req, res) => {
     try{
         const {fullName, phoneNumber, address, password, confirmPassword, email, role} = req.body;
@@ -171,7 +171,7 @@ const resetPass = async (userId, token, password) => {
 };
 
   
-  
+//User request password update
 exports.forgotPassword = async (req, res, next) => {
     try{
         const forgotPASS = await requestPasswordReset(
@@ -185,6 +185,7 @@ exports.forgotPassword = async (req, res, next) => {
 
 };
   
+//User reset password
 exports.resetPassword = async (req, res, next) => {
     try{
         const resetPasswordService = await resetPass(

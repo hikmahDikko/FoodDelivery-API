@@ -3,17 +3,17 @@ const Food = require("../models/food-model");
 const Order = require("../models/order-model");
 const QueryMethod = require("../utils/query");
 
-//Create a Cart
+//Create a Cart / Add items to cart
 exports.createCart = async (req, res) => {
     try {
         const { foodId, quantity } = req.body;
         const userId = req.user.id;
         
-        const prod = await Food.findById(foodId);
-        unitPrice = prod.price;
+        const food = await Food.findById(foodId);
+        unitPrice = foodId.price;
         
-        if (!prod) {
-            return res.status(400).send(`The product ${prod.name} is not available`)
+        if (!food) {
+            return res.status(400).send(`The food ${food.name} is not available`)
         }
         deliveryFee = 1000 * quantity;
         amount = quantity * unitPrice + deliveryFee;
@@ -23,7 +23,7 @@ exports.createCart = async (req, res) => {
             cartItem = await Cart.create({
                 userId,
                 foodId,
-                foodName : prod.name,
+                foodName : food.name,
                 deliveryFee,
                 quantity,
                 unitPrice,
@@ -59,7 +59,7 @@ exports.createCart = async (req, res) => {
         
         }else if(cart || cart.foodId === req.body.foodId) {
             
-            res.status(200).send("Item already exist in the cart, Please try update the item in the cart")
+            res.status(200).send(`${cart.name} already exist in the cart, Please try update the item in the cart`)
         }
        
     } catch (error) {
@@ -83,7 +83,8 @@ exports.getAllCarts = async (req, res) => {
           data: cart,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(404).send(error);
     }
   };
   
@@ -183,10 +184,7 @@ exports.getAllCarts = async (req, res) => {
             { new: true }
         );
 
-        res.status(204).send({
-            status: "success",
-            message: "cart deleted successfully",
-        });
+        res.status(204);
           
       } catch (error) {
           console.log(error);

@@ -61,7 +61,7 @@ exports.createFavCart = async (req, res) => {
         
         }else if(cart || cart.foodId === req.body.foodId) {
             
-            res.status(200).send("Item already exist in the cart, Please try update the item in the cart")
+            res.status(200).send(`${cart.name} already exist in the cart, Please try update the item in the cart`)
         }
     } catch (error) {
         console.log(error)
@@ -84,7 +84,8 @@ exports.getAllFavCarts = async (req, res) => {
           data: cart,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(404).send(error)
     }
   };
   
@@ -94,7 +95,7 @@ exports.getAllFavCarts = async (req, res) => {
           const cart = await FavCart.findById(req.params.id);
         
           if (!cart) {
-            return res.status(400).send(`There is no cart with the id ${req.params.id}`);
+            return res.status(400).send(`There is no favorite-cart with the id ${req.params.id}`);
           }
         
           if (req.user.id !== cart.userId.toString()) {
@@ -107,6 +108,7 @@ exports.getAllFavCarts = async (req, res) => {
           });
       } catch (error) {
           console.log(error);
+          res.status(404).send(error);
       }
   };
   
@@ -152,7 +154,7 @@ exports.getAllFavCarts = async (req, res) => {
         });
       } catch (error) {
         console.log(error);
-        res.status(404).send(error)
+        res.status(404).send(error);
       }
   };
   
@@ -184,10 +186,7 @@ exports.getAllFavCarts = async (req, res) => {
             { new: true }
         );
 
-        res.status(200).send({
-            status: "success",
-            message: "cart deleted successfully",
-        });
+        res.status(204);
           
       } catch (error) {
           console.log(error);

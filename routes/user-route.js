@@ -4,13 +4,13 @@ const { auth, checkUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getOne, getAll, deleteUser, updateUser } = userController;
+const { getOneUser, getAllUsers, deleteUser, updateUser } = userController;
 
-router.get("/", auth, checkUser("admin"), getAll);
+router.get("/", auth, checkUser("admin"), getAllUsers);
 
 router
     .route("/:id")
-    .get(auth, getOne)
+    .get(auth, getOneUser)
     .patch(auth, updateUser)
     .delete(auth, checkUser("admin"), deleteUser);
 
