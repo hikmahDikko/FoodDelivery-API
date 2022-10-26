@@ -186,7 +186,7 @@ exports.getAllFavCarts = async (req, res) => {
             { new: true }
         );
 
-        res.status(204);
+        res.status(204).send();
           
       } catch (error) {
           console.log(error);

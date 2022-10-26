@@ -162,7 +162,7 @@ exports.deleteFood = async (req, res) => {
         const delFood = await Food.findByIdAndDelete(req.params.id);
     
         if(delFood) {
-            return res.status(204);
+            return res.status(204).send();
         }else{
             return res.status(404).send({
                 status : false,

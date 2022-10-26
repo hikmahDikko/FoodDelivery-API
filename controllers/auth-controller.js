@@ -116,13 +116,13 @@ const requestPasswordReset = async (req) => {
         let mail = nodemailer.createTransport({
             service : 'gmail',
             auth : {
-                user : process.env.EMAIL_HOST,
+                user : process.env.HOST_EMAIL,
                 pass : process.env.EMAIL_PASS
             }
         });
 
         let mailOptions = {
-            from : process.env.EMAIL_HOST,
+            from : process.env.HOST_EMAIL,
             to : user.email,
             message,
             subject : "Your password reset token. It's valid for 10mins",

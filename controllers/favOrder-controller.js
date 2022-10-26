@@ -155,7 +155,7 @@ exports.deleteFavOrder = async (req, res) => {
         const del = await FavOrder.findByIdAndDelete(req.params.id);
 
         if(del) {
-            return res.status(204);
+            return res.status(204).send();
         }else{
             return res.status(404).send({
                 status : false,
