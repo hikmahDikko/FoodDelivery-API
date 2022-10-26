@@ -15,8 +15,8 @@ exports.createCart = async (req, res) => {
         if (!prod) {
             return res.status(400).send(`The product ${prod.name} is not available`)
         }
-
-        amount = quantity * unitPrice;
+        deliveryFee = 1000 * quantity;
+        amount = quantity * unitPrice + deliveryFee;
         const cart = await Cart.findOne({foodId});
         let cartItem;
         if(!cart) {
@@ -24,6 +24,7 @@ exports.createCart = async (req, res) => {
                 userId,
                 foodId,
                 foodName : prod.name,
+                deliveryFee,
                 quantity,
                 unitPrice,
                 amount,
@@ -120,13 +121,15 @@ exports.getAllCarts = async (req, res) => {
             return res.status(400).send(`There is no cart with Id ${req.params.id}`)
         }
         const quantity = req.body.quantity;
-    
-        amount = quantity * cart.unitPrice;
+
+        deliveryFee = 1000 * quantity;
+        amount = quantity * cart.unitPrice + deliveryFee;
+        
         const myOrder = await Order.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
         
         let newAmount = totalAmount + amount;
-        const update = { amount, quantity };
+        const update = { amount, quantity, deliveryFee };
     
         const updatedCart = await Cart.findByIdAndUpdate(
             req.params.id,

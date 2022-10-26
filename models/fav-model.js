@@ -21,6 +21,9 @@ const favCartSchema = new mongoose.Schema({
         min : 1,
         default : 1
     },
+    deliveryFee:{
+        type : Number
+    },
     unitPrice : {
         type : Number,
         default : 0

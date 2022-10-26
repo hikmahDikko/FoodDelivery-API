@@ -4,7 +4,7 @@ const { auth, checkUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getOrders, checkoutOrder, deleteOrder } = orderController;
+const { getOrders, getOneOrder, checkoutOrder, deleteOrder } = orderController;
 
 router
     .route("/")
@@ -12,6 +12,6 @@ router
 
 router.post("/checkout", auth, checkoutOrder);
 
-router.delete("/:id", auth, deleteOrder);
+router.route("/:id").get(auth, checkUser("vendor"), getOneOrder).delete(auth, checkUser("vendor"), deleteOrder);
 
 module.exports = router;

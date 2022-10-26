@@ -106,6 +106,27 @@ exports.checkoutOrder = async (req, res) => {
     }
 }
 
+exports.getOneOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+      
+        if (!order) {
+          return res.status(400).send(`There is no order with the id ${req.params.id}`);
+        }
+      
+        if (req.user.id !== order.userId.toString()) {
+          return res.status(403).send(`You are not authorized!!!!!!!`);
+        }
+      
+        res.status(200).json({
+          status: "success",
+          data: order,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 exports.getOrders = async (req, res) => {
     const owner = req.user._id;
     try {
@@ -132,7 +153,7 @@ exports.deleteOrder = async (req, res) => {
         const del = await Order.findByIdAndDelete(req.params.id);
 
         if(del) {
-            return res.status(200).send({
+            return res.status(204).send({
                 status : true,
                 message : "Order successfully deleted"
             });

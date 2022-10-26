@@ -106,6 +106,27 @@ exports.checkoutFavOrder = async (req, res) => {
     }
 }
 
+exports.getOneFavOrder = async (req, res) => {
+    try {
+        const favOrder = await FavOrder.findById(req.params.id);
+      
+        if (!favOrder) {
+          return res.status(400).send(`There is no order with the id ${req.params.id}`);
+        }
+      
+        if (req.user.id !== favOrder.userId.toString()) {
+          return res.status(403).send(`You are not authorized!!!!!!!`);
+        }
+      
+        res.status(200).json({
+          status: "success",
+          data: favOrder,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 exports.getFavOrders = async (req, res) => {
     const owner = req.user._id;
     try {
@@ -131,7 +152,7 @@ exports.deleteFavOrder = async (req, res) => {
         const del = await FavOrder.findByIdAndDelete(req.params.id);
 
         if(del) {
-            return res.status(200).send({
+            return res.status(204).send({
                 status : true,
                 message : "Order fron favorite successfully deleted"
             });

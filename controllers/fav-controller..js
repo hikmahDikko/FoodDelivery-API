@@ -16,7 +16,9 @@ exports.createFavCart = async (req, res) => {
             return res.status(400).send(`The product ${prod.name} is not available`)
         }
 
-        amount = quantity * unitPrice;
+        deliveryFee = 1000 * quantity;
+        amount = quantity * unitPrice + deliveryFee;
+        
         const cart = await FavCart.findOne({foodId});
         let cartItem;
         if(!cart) {
@@ -24,6 +26,7 @@ exports.createFavCart = async (req, res) => {
                 userId,
                 foodId,
                 foodName : prod.name,
+                deliveryFee,
                 quantity,
                 unitPrice,
                 amount,
@@ -120,12 +123,14 @@ exports.getAllFavCarts = async (req, res) => {
         }
         const quantity = req.body.quantity;
     
-        amount = quantity * cart.unitPrice;
+        deliveryFee = 1000 * quantity;
+        amount = quantity * cart.unitPrice + deliveryFee;
+
         const myOrder = await  FavOrder.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount + cart.unitPrice;
         
         let newAmount = totalAmount + amount;
-        const update = { amount, quantity };
+        const update = { amount, quantity, deliveryFee };
     
         const updatedCart = await FavCart.findByIdAndUpdate(
             req.params.id,

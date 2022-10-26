@@ -4,7 +4,7 @@ const { auth, checkUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getFavOrders, checkoutFavOrder, deleteFavOrder } = favOrderController;
+const { getFavOrders, getOneFavOrder, checkoutFavOrder, deleteFavOrder } = favOrderController;
 
 router
     .route("/")
@@ -12,6 +12,6 @@ router
 
 router.post("/checkout", auth, checkoutFavOrder);
 
-router.delete("/:id", auth, deleteFavOrder);
+router.route("/:id").get(auth, checkUser("vendor"), getOneFavOrder).delete(auth, checkUser("vendor"), deleteFavOrder);
 
 module.exports = router;
