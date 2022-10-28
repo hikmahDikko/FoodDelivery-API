@@ -1669,3 +1669,6 @@
 [0mGET /api/v1/favorite-orders [32m200[0m 450.189 ms - 360[0m
 [0mDELETE /api/v1/favorites/635c5a8d55bcb7862babdc4a [32m204[0m 1532.123 ms - -[0m
 [0mGET /api/v1/favorite-orders [32m200[0m 314.172 ms - 54[0m
+[0mGET /api/v1/foods [32m200[0m 318.566 ms - 427[0m
+[0mGET /api/v1/favorites/635c53d92b4b6604fea0d03a [33m400[0m 295.558 ms - 62[0m
+[0mGET /api/v1/foods/635988056e81aa22826ca088 [32m200[0m 314.965 ms - 235[0m
