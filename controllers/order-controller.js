@@ -3,6 +3,7 @@ const Flutterwave = require("flutterwave-node-v3");
 const Order = require("../models/order-model");
 const nodemailer = require("nodemailer");
 const Cart = require("../models/cart-model");
+fs = require('fs');
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
@@ -14,9 +15,11 @@ exports.checkoutOrder = async (req, res) => {
         
         let cart = await Cart.findOne({userId});
         let order = await Order.findOne({userId});
+        
         let user = req.user;
         
-        if(order && cart) {
+        if(cart) {
+            
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
@@ -47,14 +50,6 @@ exports.checkoutOrder = async (req, res) => {
                 })
                 
                 if(callValidate.status === 'success') {
-                                    
-                let order = await Order.findOne({userId});
-                let cartItems = await Cart.find({userId});
-                if (cartItems) {
-                    cartItems.map(async cartItem => {
-                        await Cart.findByIdAndDelete(cartItem._id);
-                    }) 
-                }
                 
                 let mail = nodemailer.createTransport({
                     service : 'gmail',
@@ -66,7 +61,7 @@ exports.checkoutOrder = async (req, res) => {
 
                 let mailOptions = {
                     from : process.env.HOST_EMAIL,
-                    to : process.env.VENDORS_EMAIL,
+                    to : `${process.env.VENDORS_EMAIL}, ${user.email}`,
                     subject : "Orders",
                     text : "Ordered items are as follows " + '\n' + order
                 }
@@ -77,10 +72,20 @@ exports.checkoutOrder = async (req, res) => {
                     } else {
                         console.log('Email sent : ' + info.response);
                     }
-                })
+                });
+                
+                let cartItems = await Cart.find({userId});
+                if (cartItems) {
+                    cartItems.map(async cartItem => {
+                        await Cart.findByIdAndDelete(cartItem._id);
+                    });
+                }
+
+                await Order.findByIdAndDelete(order._id)
                 return res.status(201).send({
                     status : "Payment successfully made",
-                    message : "Your orders has been received",
+                    message : "Your orders has been received", 
+                    order
                 })
                 } 
                 if(callValidate.status === 'error') {
@@ -106,28 +111,6 @@ exports.checkoutOrder = async (req, res) => {
     }
 }
 
-//Get one Order
-exports.getOneOrder = async (req, res) => {
-    try {
-        const order = await Order.findById(req.params.id);
-      
-        if (!order) {
-          return res.status(400).send(`There is no order with the id ${req.params.id}`);
-        }
-      
-        if (req.user.id !== order.userId.toString()) {
-          return res.status(403).send(`You are not authorized!!!!!!!`);
-        }
-      
-        res.status(200).json({
-          status: "success",
-          data: order,
-        });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
 //Get all ordered items
 exports.getAllOrders = async (req, res) => {
     const owner = req.user._id;
@@ -146,25 +129,5 @@ exports.getAllOrders = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send(error);
-    }
-};
-
-//Delet a order
-exports.deleteOrder = async (req, res) => {
-    try {
-        const del = await Order.findByIdAndDelete(req.params.id);
-
-        if(del) {
-            return res.status(204).send();
-        }else{
-            return res.status(404).send({
-                status : false,
-                message : "Order details cannot be fetched"
-            })
-        }
-        
-    } catch (error) {
-        console.log(error);
-        res.status(404).send(error)
     }
 };

@@ -10,13 +10,14 @@ exports.createCart = async (req, res) => {
         const userId = req.user.id;
         
         const food = await Food.findById(foodId);
-        unitPrice = foodId.price;
+        unitPrice = food.price;
         
         if (!food) {
             return res.status(400).send(`The food ${food.name} is not available`)
         }
-        deliveryFee = 1000 * quantity;
+        deliveryFee = 500;
         amount = quantity * unitPrice + deliveryFee;
+        
         const cart = await Cart.findOne({foodId});
         let cartItem;
         if(!cart) {
@@ -27,17 +28,15 @@ exports.createCart = async (req, res) => {
                 deliveryFee,
                 quantity,
                 unitPrice,
-                amount,
+                amount
             });
             const myOrder = await Order.findOne({ userId: req.user.id });
             if (!myOrder) {
                 await Order.create({
                     userId: req.user.id,
                     cartId: [cartItem.id],
-                    foodQuantity : [cartItem.quantity],
-                    totalAmount: cartItem.amount,
+                    totalAmount: cartItem.amount
                 });
-            
             } else {
                 let cart_Id = [...myOrder.cartId, cartItem.id];
                 let totalAmount = myOrder.totalAmount + amount;
@@ -59,7 +58,7 @@ exports.createCart = async (req, res) => {
         
         }else if(cart || cart.foodId === req.body.foodId) {
             
-            res.status(200).send(`${cart.name} already exist in the cart, Please try update the item in the cart`)
+            res.status(200).send(`${food.name} already exist in the cart, Please try update the item in the cart`)
         }
        
     } catch (error) {
@@ -123,14 +122,14 @@ exports.getAllCarts = async (req, res) => {
         }
         const quantity = req.body.quantity;
 
-        deliveryFee = 1000 * quantity;
+        deliveryFee = 500;
         amount = quantity * cart.unitPrice + deliveryFee;
         
         const myOrder = await Order.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
         
         let newAmount = totalAmount + amount;
-        const update = { amount, quantity, deliveryFee };
+        const update = { amount, quantity };
     
         const updatedCart = await Cart.findByIdAndUpdate(
             req.params.id,
