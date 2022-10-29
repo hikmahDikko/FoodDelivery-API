@@ -1,6 +1,6 @@
 # Food Delivery API
 
-A Food Deluvery backend API for a application. 
+Food Delivery backend API for a web application. 
 The API Requirement is as follows;
 
 # Functional Requirements
@@ -25,9 +25,9 @@ The API Requirement is as follows;
 
 3. Food service: Handles food creation, food listing, food update and to delete a food from the menu.
 
-4. Cart/Order Service: Handles orders, adding to cart, removing from cart and to delete from cart.
+4. Cart/Order Service: Handles orders, adding to cart, removing from cart and to update a cart.
 
-5. Order Checkout : Handles the collection os all items in the cart and check out the items after successful payment.
+5. Order Checkout : Handles the collection of all items in the cart and check out the items after successful payment.
 
 # DOCUMENTATION
 
