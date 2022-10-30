@@ -10,6 +10,9 @@ const orderSchema = new mongoose.Schema({
         type : ObjectID,
         ref : "Cart"
     }],
+    deliveryFee:{
+        type : Number
+    },
     totalAmount : {
         type : Number,
         default : 0

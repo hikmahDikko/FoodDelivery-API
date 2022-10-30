@@ -16,7 +16,7 @@ exports.createCart = async (req, res) => {
             return res.status(400).send(`The food ${food.name} is not available`)
         }
         deliveryFee = 500;
-        amount = quantity * unitPrice + deliveryFee;
+        amount = quantity * unitPrice;
         
         const cart = await Cart.findOne({foodId});
         let cartItem;
@@ -25,7 +25,6 @@ exports.createCart = async (req, res) => {
                 userId,
                 foodId,
                 foodName : food.name,
-                deliveryFee,
                 quantity,
                 unitPrice,
                 amount
@@ -35,7 +34,8 @@ exports.createCart = async (req, res) => {
                 await Order.create({
                     userId: req.user.id,
                     cartId: [cartItem.id],
-                    totalAmount: cartItem.amount
+                    deliveryFee,
+                    totalAmount: cartItem.amount + deliveryFee,
                 });
             } else {
                 let cart_Id = [...myOrder.cartId, cartItem.id];
@@ -123,7 +123,7 @@ exports.getAllCarts = async (req, res) => {
         const quantity = req.body.quantity;
 
         deliveryFee = 500;
-        amount = quantity * cart.unitPrice + deliveryFee;
+        amount = quantity * cart.unitPrice;
         
         const myOrder = await Order.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
@@ -163,6 +163,7 @@ exports.getAllCarts = async (req, res) => {
             return res.status(400).send(`There is no cart with Id ${req.params.id}`)
         }
 
+        deliveryFee = 500;
         const myOrder = await Order.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
         const cart_id = myOrder.cartId.filter(

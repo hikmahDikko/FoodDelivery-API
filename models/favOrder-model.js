@@ -10,6 +10,9 @@ const FavOrderSchema = new mongoose.Schema({
         type : ObjectID,
         ref : "Favorite"
     }],
+    deliveryFee : {
+        type : Number
+    },
     totalAmount : {
         type : Number,
         default : 0

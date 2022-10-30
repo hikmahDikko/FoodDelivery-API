@@ -61,7 +61,7 @@ exports.checkoutOrder = async (req, res) => {
 
                 let mailOptions = {
                     from : process.env.HOST_EMAIL,
-                    to : `${process.env.VENDORS_EMAIL}, ${user.email}`,
+                    to : `${process.env.VENDORS_EMAIL}`,
                     subject : "Orders",
                     text : "Ordered items are as follows " + '\n' + order
                 }

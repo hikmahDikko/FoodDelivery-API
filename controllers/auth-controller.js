@@ -80,7 +80,7 @@ exports.signIn = async (req, res) => {
         }else {
             res.status(401).json({
                 status: "fail",
-                message: "Invalid email or password",
+                message: "Invalid email and password",
                 });
             }
         }

@@ -17,7 +17,7 @@ exports.createFavCart = async (req, res) => {
         }
 
         deliveryFee = 500;
-        amount = quantity * unitPrice + deliveryFee;
+        amount = quantity * unitPrice;
         
         const cart = await FavCart.findOne({foodId});
         let cartItem;
@@ -26,7 +26,6 @@ exports.createFavCart = async (req, res) => {
                 userId,
                 foodId,
                 foodName : food.name,
-                deliveryFee,
                 quantity,
                 unitPrice,
                 amount,
@@ -36,7 +35,8 @@ exports.createFavCart = async (req, res) => {
                 await FavOrder.create({
                     userId: req.user.id,
                     cartId: [cartItem.id],
-                    totalAmount: cartItem.amount,
+                    deliveryFee,
+                    totalAmount: cartItem.amount + deliveryFee,
                 });
             
             } else {
