@@ -13,6 +13,7 @@ const cartRoutes = require("./routes/cart-route");
 const orderRoutes = require("./routes/order-route");
 const favCartRoutes = require("./routes/fav-route");
 const favOrderRoutes = require("./routes/favOrder-route");
+const orderHistory = require("./routes/order-history");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -33,5 +34,6 @@ app.use("/api/v1/carts", cartRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/favorites", favCartRoutes);
 app.use("/api/v1/favorite-orders", favOrderRoutes);
+app.use("/api/v1/order-histories", orderHistory);
 
 module.exports = app;

@@ -40,6 +40,8 @@ const userSchema = new mongoose.Schema({
         default: "user",
         enum: ["user", "vendor", "admin"],
     }
+},{
+    timestamps : true,
 });
 
 

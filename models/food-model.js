@@ -26,6 +26,8 @@ const foodSchema = new mongoose.Schema({
         type : String,
         required : [true, "Please upload the food image"],
     }
+},{
+    timestamps : true,
 });
 
 const Food = mongoose.model("Food", foodSchema);

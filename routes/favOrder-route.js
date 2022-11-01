@@ -8,7 +8,7 @@ const { getAllFavOrders, checkoutFavOrder } = favOrderController;
 
 router
     .route("/")
-    .get(auth, checkUser("vendor"), getAllFavOrders);
+    .get(auth, getAllFavOrders);
 
 router.post("/checkout", auth, checkoutFavOrder);
 

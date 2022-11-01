@@ -1,6 +1,7 @@
 const express = require("express")
 const Flutterwave = require("flutterwave-node-v3");
 const Order = require("../models/order-model");
+const OrderedItems = require("../models/orderedItems");
 const nodemailer = require("nodemailer");
 const Cart = require("../models/cart-model");
 fs = require('fs');
@@ -13,13 +14,11 @@ exports.checkoutOrder = async (req, res) => {
         const userId = req.user._id;
         let payload = req.body;
         
-        let cart = await Cart.findOne({userId});
         let order = await Order.findOne({userId});
         
         let user = req.user;
         
-        if(cart) {
-            
+        if(order) {
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
@@ -77,11 +76,20 @@ exports.checkoutOrder = async (req, res) => {
                 let cartItems = await Cart.find({userId});
                 if (cartItems) {
                     cartItems.map(async cartItem => {
-                        await Cart.findByIdAndDelete(cartItem._id);
+                        await Cart.findByIdAndUpdate(cartItem._id, {
+                            isCompleted : true
+                        });
                     });
                 }
 
-                await Order.findByIdAndDelete(order._id)
+                await OrderedItems.create({
+                    userId: req.user.id,
+                    cartId: [...order.cartId],
+                    totalAmount: order.totalAmount
+                })
+
+                await Order.findByIdAndDelete(order._id);
+
                 return res.status(201).send({
                     status : "Payment successfully made",
                     message : "Your orders has been received", 
@@ -115,11 +123,11 @@ exports.checkoutOrder = async (req, res) => {
 exports.getAllOrders = async (req, res) => {
     const owner = req.user._id;
     try {
-        const orders = await Order.find({ owner : owner }).sort({ date : -1 });
+        const orders = await Order.findOne({ userId : owner }).sort({ date : -1 });
         if(orders) {
             return res.status(200).json({
                 message : "success",
-                results : orders.length,
+                results : orders.cartId.length,
                 data : {
                     orders
                 }

@@ -1,6 +1,7 @@
 const express = require("express")
 const Flutterwave = require("flutterwave-node-v3");
 const FavOrder = require("../models/favOrder-model");
+const OrderedItems = require("../models/orderedItems");
 const nodemailer = require("nodemailer");
 const FavCart = require("../models/fav-model");
 fs = require('fs');
@@ -13,11 +14,10 @@ exports.checkoutFavOrder = async (req, res) => {
         const userId = req.user._id;
         let payload = req.body;
         
-        let cart = await FavCart.findOne({userId});
         let favOrder = await FavOrder.findOne({userId});
         let user = req.user;
         
-        if(cart) {
+        if(favOrder) {
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
@@ -76,9 +76,16 @@ exports.checkoutFavOrder = async (req, res) => {
                 let cartItems = await FavCart.find({userId});
                 if (cartItems) {
                     cartItems.map(async cartItem => {
-                        await FavCart.findByIdAndDelete(cartItem._id);
+                        await FavCart.findByIdAndUpdate(cartItem._id, {
+                            isCompleted : true
+                        });
                     }) 
                 }
+                await OrderedItems.create({
+                    userId: req.user.id,
+                    cartId: [...favOrder.cartId],
+                    totalAmount: favOrder.totalAmount
+                })
 
                 await FavOrder.findByIdAndDelete(favOrder._id)
                 return res.status(201).send({
@@ -114,11 +121,11 @@ exports.checkoutFavOrder = async (req, res) => {
 exports.getAllFavOrders = async (req, res) => {
     const owner = req.user._id;
     try {
-        const orders = await FavOrder.find({ owner : owner }).sort({ date : -1 });
+        const orders = await FavOrder.findOne({ userId : owner }).sort({ date : -1 });
         if(orders) {
             return res.status(200).json({
                 message : "success",
-                results : orders.length,
+                results : orders.cartId.length,
                 data : {
                     orders
                 }
