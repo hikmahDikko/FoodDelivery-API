@@ -1,6 +1,6 @@
-const FavCart = require("../models/fav-model");
-const Food = require("../models/food-model");
-const  FavOrder = require("../models/favOrder-model");
+const FavCart = require("../models/favorite");
+const Food = require("../models/food");
+const  FavOrder = require("../models/favoriteOrder");
 const QueryMethod = require("../utils/query")
 
 //Create a Cart
@@ -123,12 +123,12 @@ exports.getAllFavCarts = async (req, res) => {
   exports.updateFavCart = async (req, res) => {
     try { 
         const cart = await FavCart.findById(req.params.id);
+        if (!cart) {
+            return res.status(400).send(`There is no cart with Id ${req.params.id}`)
+        }
         
         if (req.user.id !== cart.userId.toString()) {
             return res.status(403).send(`You are not authorized!!!!!!!`);
-        }
-        if (!cart) {
-            return res.status(400).send(`There is no cart with Id ${req.params.id}`)
         }
         const quantity = req.body.quantity;
 

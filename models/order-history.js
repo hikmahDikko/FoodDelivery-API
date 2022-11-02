@@ -18,6 +18,10 @@ const orderedItemsSchema = new mongoose.Schema({
         type : Number,
         default : 0
     },
+    comments : [{
+        type : ObjectID,
+        ref : "Comment"
+    }]
 },{
     timestamps : true
 });
@@ -47,6 +51,16 @@ orderedItemsSchema.pre(/^find/, function (next) {
         {
         path: "FavoriteId",
         select: "foodName quantity amount",
+        }
+    ]);
+    next();
+});
+
+orderedItemsSchema.pre(/^find/, function (next) {
+    this.populate([
+        {
+        path: "comments",
+        select: "ratings review",
         }
     ]);
     next();

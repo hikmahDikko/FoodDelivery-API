@@ -1,6 +1,6 @@
-const User = require("../models/user-model");
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
-const Token = require("../models/token-model");
+const Token = require("../models/token");
 const { createToken } = require("../middleware/authMiddleware");
 const handleError = require("../errorHandlers/errors");
 const crypto = require("crypto");
@@ -80,7 +80,7 @@ exports.signIn = async (req, res) => {
         }else {
             res.status(401).json({
                 status: "fail",
-                message: "Invalid email and password",
+                message: "Invalid email or password",
                 });
             }
         }

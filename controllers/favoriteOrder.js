@@ -1,28 +1,27 @@
 const express = require("express")
 const Flutterwave = require("flutterwave-node-v3");
-const Order = require("../models/order-model");
-const OrderedItems = require("../models/orderedItems");
+const FavOrder = require("../models/favoriteOrder");
+const OrderedItems = require("../models/order-history");
 const nodemailer = require("nodemailer");
-const Cart = require("../models/cart-model");
+const FavCart = require("../models/favorite");
 fs = require('fs');
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
-//Checkout ordered foods
-exports.checkoutOrder = async (req, res) => {
+//Checkout Ordered food items
+exports.checkoutFavOrder = async (req, res) => {
     try {
         const userId = req.user._id;
         let payload = req.body;
         
-        let order = await Order.findOne({userId});
-        
+        let favOrder = await FavOrder.findOne({userId});
         let user = req.user;
         
-        if(order) {
+        if(favOrder) {
             payload = {
                 ...payload, 
                 enckey: process.env.FLW_ENCRYPT_KEY, 
-                amount : order.totalAmount, 
+                amount : favOrder.totalAmount, 
                 email : user.email, 
                 fullname : user.fullname, 
                 phone_number : user.phoneNumber,
@@ -49,7 +48,7 @@ exports.checkoutOrder = async (req, res) => {
                 })
                 
                 if(callValidate.status === 'success') {
-                
+                                    
                 let mail = nodemailer.createTransport({
                     service : 'gmail',
                     auth : {
@@ -60,9 +59,9 @@ exports.checkoutOrder = async (req, res) => {
 
                 let mailOptions = {
                     from : process.env.HOST_EMAIL,
-                    to : `${process.env.VENDORS_EMAIL}`,
+                    to : `${process.env.VENDORS_EMAIL}, ${user.email}`,
                     subject : "Orders",
-                    text : "Ordered items are as follows " + '\n' + order
+                    text : "Ordered favorite-items are as follows " + '\n' + favOrder
                 }
                 
                 mail.sendMail(mailOptions, function(error, info) {
@@ -72,28 +71,18 @@ exports.checkoutOrder = async (req, res) => {
                         console.log('Email sent : ' + info.response);
                     }
                 });
-                
-                let cartItems = await Cart.find({userId});
-                if (cartItems) {
-                    cartItems.map(async cartItem => {
-                        await Cart.findByIdAndUpdate(cartItem._id, {
-                            isCompleted : true
-                        });
-                    });
-                }
 
                 await OrderedItems.create({
                     userId: req.user.id,
-                    cartId: [...order.cartId],
-                    totalAmount: order.totalAmount
+                    FavoriteId: [...favOrder.cartId],
+                    //label : 'Favorite cart',
+                    totalAmount: favOrder.totalAmount
                 })
-
-                await Order.findByIdAndDelete(order._id);
 
                 return res.status(201).send({
                     status : "Payment successfully made",
-                    message : "Your orders has been received", 
-                    order
+                    message : "Your orders has been received",
+                    favOrder
                 })
                 } 
                 if(callValidate.status === 'error') {
@@ -119,11 +108,11 @@ exports.checkoutOrder = async (req, res) => {
     }
 }
 
-//Get all ordered items
-exports.getAllOrders = async (req, res) => {
+//Get all favorite orders
+exports.getAllFavOrders = async (req, res) => {
     const owner = req.user._id;
     try {
-        const orders = await Order.findOne({ userId : owner }).sort({ date : -1 });
+        const orders = await FavOrder.findOne({ userId : owner }).sort({ date : -1 });
         if(orders) {
             return res.status(200).json({
                 message : "success",
@@ -133,9 +122,10 @@ exports.getAllOrders = async (req, res) => {
                 }
             })
         }
-        res.status(404).send("No orders found");
+        res.status(404).send("No favorite-orders found");
     } catch (error) {
         console.log(error)
         res.status(500).send(error);
     }
 };
+

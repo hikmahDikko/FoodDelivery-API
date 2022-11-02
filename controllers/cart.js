@@ -1,6 +1,6 @@
-const Cart = require("../models/cart-model");
-const Food = require("../models/food-model");
-const Order = require("../models/order-model");
+const Cart = require("../models/cart");
+const Food = require("../models/food");
+const Order = require("../models/order");
 const QueryMethod = require("../utils/query");
 
 //Create a Cart / Add items to cart
@@ -127,12 +127,12 @@ exports.getAllCarts = async (req, res) => {
   exports.updateCart = async (req, res) => {
       try { 
         const cart = await Cart.findById(req.params.id);
+        if (!cart) {
+            return res.status(400).send(`There is no cart with Id ${req.params.id}`)
+        }
         
         if (req.user.id !== cart.userId.toString()) {
             return res.status(403).send(`You are not authorized!!!!!!!`);
-        }
-        if (!cart) {
-            return res.status(400).send(`There is no cart with Id ${req.params.id}`)
         }
 
         if(cart.isCompleted === false) {

@@ -1,4 +1,4 @@
-const Food = require("../models/food-model");
+const Food = require("../models/food");
 const multer = require("multer");
 const sharp = require("sharp");
 const QueryMethod = require("../utils/query");

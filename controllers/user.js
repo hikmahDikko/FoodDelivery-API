@@ -1,4 +1,4 @@
-const User = require("../models/user-model");
+const User = require("../models/user");
 const handleError = require("../errorHandlers/errors");
 const QueryMethod = require("../utils/query");
 

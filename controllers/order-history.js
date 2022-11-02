@@ -1,4 +1,4 @@
-const OrderedItems = require("../models/orderedItems");
+const OrderedItems = require("../models/order-history");
 const QueryMethod = require("../utils/query");
 
 
