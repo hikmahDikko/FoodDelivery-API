@@ -125,7 +125,7 @@ const requestPasswordReset = async (req) => {
             from : process.env.HOST_EMAIL,
             to : user.email,
             message,
-            subject : "Your password reset token. It's valid for 10mins",
+            subject : "Your password reset token. It's valid for two minutes",
             text : resetUrl
         }
         
@@ -197,7 +197,11 @@ exports.resetPassword = async (req, res, next) => {
         if(req.body.password.length < 6 || req.body.password !== req.body.confirmPassword) {
             return res.status(400).send("Ensure password and confirm password are of the same characters, nothing less than 6 characters");
         }
-        return res.status(200).json(resetPasswordService);
+        res.status(200).json(resetPasswordService);
+
+        let token = await Token.findOne({ userId: req.body.userId});
+        if (token) await token.deleteOne();
+
     } catch (error) {
         console.log(error);
         res.status(400).json({message : error});
