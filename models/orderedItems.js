@@ -10,6 +10,10 @@ const orderedItemsSchema = new mongoose.Schema({
         type : ObjectID,
         ref : "Cart"
     }],
+    FavoriteId : [{
+        type : ObjectID,
+        ref : "Favorite"
+    }],
     totalAmount : {
         type : Number,
         default : 0
@@ -32,6 +36,16 @@ orderedItemsSchema.pre(/^find/, function (next) {
     this.populate([
         {
         path: "cartId",
+        select: "foodName quantity amount",
+        }
+    ]);
+    next();
+});
+
+orderedItemsSchema.pre(/^find/, function (next) {
+    this.populate([
+        {
+        path: "FavoriteId",
         select: "foodName quantity amount",
         }
     ]);

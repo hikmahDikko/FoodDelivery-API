@@ -138,7 +138,6 @@ exports.getAllCarts = async (req, res) => {
         if(cart.isCompleted === false) {
             const quantity = req.body.quantity;
 
-            deliveryFee = 500;
             amount = quantity * cart.unitPrice;
             
             const myOrder = await Order.findOne({ userId: req.user.id });

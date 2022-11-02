@@ -72,22 +72,13 @@ exports.checkoutFavOrder = async (req, res) => {
                     }
                 });
 
-
-                let cartItems = await FavCart.find({userId});
-                if (cartItems) {
-                    cartItems.map(async cartItem => {
-                        await FavCart.findByIdAndUpdate(cartItem._id, {
-                            isCompleted : true
-                        });
-                    }) 
-                }
                 await OrderedItems.create({
                     userId: req.user.id,
-                    cartId: [...favOrder.cartId],
+                    FavoriteId: [...favOrder.cartId],
+                    //label : 'Favorite cart',
                     totalAmount: favOrder.totalAmount
                 })
 
-                await FavOrder.findByIdAndDelete(favOrder._id)
                 return res.status(201).send({
                     status : "Payment successfully made",
                     message : "Your orders has been received",

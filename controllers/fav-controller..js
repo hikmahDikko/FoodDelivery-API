@@ -18,17 +18,15 @@ exports.createFavCart = async (req, res) => {
 
         deliveryFee = 500;
         amount = quantity * unitPrice;
-        isCompleted = false;
         
-        const cartt = await FavCart.findOne({isCompleted : false});
+        const cart = await FavCart.findOne({userId});
         let cartItem;
-        if(!cartt) {
+        if(!cart) {
             cartItem = await FavCart.create({
                 userId,
                 foodId,
                 foodName : food.name,
                 quantity,
-                isCompleted,
                 unitPrice,
                 amount
             });
@@ -59,7 +57,7 @@ exports.createFavCart = async (req, res) => {
                     data: { cartItem },
                 });
             
-            }else if(cartt || cartt.foodId === req.body.foodId ) {
+            }else if(cart || cart.foodId === req.body.foodId ) {
                 
                 res.status(200).send(`${food.name} already exist in the cart, Please try update the item in the cart`)
             }
@@ -75,7 +73,7 @@ exports.getAllFavCarts = async (req, res) => {
     try { 
         const userId = req.user.id;
 
-        let queriedCarts = new QueryMethod(FavCart.find({isCompleted : false}), req.query)
+        let queriedCarts = new QueryMethod(FavCart.find(), req.query)
           .sort()
           .filter()
           .limit()
@@ -111,14 +109,10 @@ exports.getAllFavCarts = async (req, res) => {
             return res.status(403).send(`You are not authorized!!!!!!!`);
           }
         
-          if(cart.isCompleted === false) {
-            res.status(200).json({
-                status: "success",
-                data: cart,
-              });
-          } else {
-              res.status(404).send("Cart not found");
-          }
+        res.status(200).json({
+            status: "success",
+            data: cart,
+        });
       } catch (error) {
           console.log(error);
           res.status(404).send(error);
@@ -128,27 +122,24 @@ exports.getAllFavCarts = async (req, res) => {
   //Update Cart
   exports.updateFavCart = async (req, res) => {
     try { 
-      const cart = await FavCart.findById(req.params.id);
-      
-      if (req.user.id !== cart.userId.toString()) {
-          return res.status(403).send(`You are not authorized!!!!!!!`);
-      }
-      if (!cart) {
-          return res.status(400).send(`There is no cart with Id ${req.params.id}`)
-      }
-
-      if(cart.isCompleted === false) {
+        const cart = await FavCart.findById(req.params.id);
+        
+        if (req.user.id !== cart.userId.toString()) {
+            return res.status(403).send(`You are not authorized!!!!!!!`);
+        }
+        if (!cart) {
+            return res.status(400).send(`There is no cart with Id ${req.params.id}`)
+        }
         const quantity = req.body.quantity;
 
-        deliveryFee = 500;
-        amount = quantity * cart.unitPrice + deliveryFee;
+        amount = quantity * cart.unitPrice;
         
         const myOrder = await FavOrder.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
         
         let newAmount = totalAmount + amount;
         const update = { amount, quantity };
-    
+
         const updatedCart = await FavCart.findByIdAndUpdate(
             req.params.id,
             { $set: update },
@@ -156,21 +147,17 @@ exports.getAllFavCarts = async (req, res) => {
                 new: true,
             }
         );
-    
+
         await FavOrder.findOneAndUpdate(
             { userId: req.user.id },
             { $set: { totalAmount: newAmount } },
             { new: true }
         );
-    
+
         return res.status(200).json({
             status: "success",
             data: { updatedCart },
         });
-      } else {
-        res.status(404).send("Cart not found")
-      }
-      
     } catch (error) {
       console.log(error);
       res.status(404).send(error)
@@ -180,12 +167,10 @@ exports.getAllFavCarts = async (req, res) => {
 //Delete an Cart
 exports.deleteFavCart = async (req, res) => {
     try {
-      const cart = await FavCart.findById(req.params.id);
-      if (!cart) {
-          return res.status(400).send(`There is no cart with Id ${req.params.id}`)
-      }
-
-      if(cart.isCompleted === false) {
+        const cart = await FavCart.findById(req.params.id);
+        if (!cart) {
+            return res.status(400).send(`There is no cart with Id ${req.params.id}`)
+        }
         const myOrder = await FavOrder.findOne({ userId: req.user.id });
         let totalAmount = myOrder.totalAmount - cart.amount;
         const cart_id = myOrder.cartId.filter(
@@ -207,11 +192,6 @@ exports.deleteFavCart = async (req, res) => {
         );
 
         res.status(204).send();
-      } else {
-        res.status(404).send("Cart not found")
-      }
-      
-        
     } catch (error) {
         console.log(error);
         res.status(404).send(error)

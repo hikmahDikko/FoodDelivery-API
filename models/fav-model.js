@@ -26,11 +26,6 @@ const favCartSchema = new mongoose.Schema({
         default : 0
     },
     amount : Number,
-    isCompleted : {
-        type : Boolean,
-        default : false,
-        required : true
-    }
 }, {
     timestamps : true
 });
