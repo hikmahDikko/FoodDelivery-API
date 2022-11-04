@@ -28,6 +28,7 @@ The API Requirements are as follows;
 
 - Users can get all order histories of successful payments.
 
+- Users can make reviews and ratings.
 
 
 #   Food Delivery Services
@@ -45,6 +46,8 @@ The API Requirements are as follows;
 6. Order Checkout : Handles the collection of all items in the cart and check out the items after successful payment.
 
 7. Order History : Handles the collection of order history of each user, user can get one history and can also delete from histories.
+
+8. Review Service : Handles the creation of ratings and reviews, update, delete, get one and get all reviews.
 
 
 
