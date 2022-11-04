@@ -4,12 +4,12 @@ const { auth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { createReview } = reviewController;
+const { createReview, getAllReviews, getOneReview, deleteOneReview, updateReview } = reviewController;
 
 router.post("/:id", auth, createReview);
 
-// router.get("/all", auth, checkUser("vendor"), getAllOrderedItems);
+router.get("/", auth, getAllReviews);
 
-// router.route("/:id").get(auth, getOneHistory).delete(auth, deleteHistory);
+router.route("/:id").get(auth, getOneReview).delete(auth, deleteOneReview).patch(auth, updateReview);
 
 module.exports = router;

@@ -9,7 +9,7 @@ const handleError = (err) => {
     let errors = { vendor : "", name : "", description : "", price : "", quantity : "", foodImage : "", category : ""};
     
     //validate errors
-    if(err.message.includes('Product validation failed')) {
+    if(err.message.includes('Food validation failed')) {
         Object.values(err.errors).forEach(({properties}) => {
             errors[properties.path] = properties.message
         })

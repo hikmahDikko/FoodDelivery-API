@@ -1,11 +1,10 @@
 const OrderedItems = require("../models/order-history");
 const QueryMethod = require("../utils/query");
 
-
 exports.getOneHistory = async (req, res) => {
     try {
-        const history = await  OrderedItems.findById(req.params.id);
-      
+        const history = await OrderedItems.findById(req.params.id);
+      console.log(history)
         if (!history) {
           return res.status(400).send(`There is no order history with the id ${req.params.id}`);
         }
@@ -15,7 +14,7 @@ exports.getOneHistory = async (req, res) => {
         }
         res.status(200).json({
             status: "success",
-            data: cart,
+            data: history,
         });
     } catch (error) {
         console.log(error);
@@ -23,10 +22,29 @@ exports.getOneHistory = async (req, res) => {
     }
 };
 
+exports.getUserHistory = async (req, res) => {
+    try {
+        const history = await  OrderedItems.findById(req.params.id).populate("userId", "fullName address phoneNumber email");
+      
+        if (!history) {
+          return res.status(400).send(`There is no order history with the id ${req.params.id}`);
+        }
+      
+        res.status(200).json({
+            status: "success",
+            data: history,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(404).send(error);
+    }
+};
+
+
 exports.getAllHistories = async (req, res) => {
     const owner = req.user._id;
     try {
-        const orders = await OrderedItems.findOne({ userId : owner }).sort({ date : -1 });
+        const orders = await OrderedItems.find({ userId : owner }).sort({ date : -1 });
         if(orders) {
             return res.status(200).json({
                 message : "success",
@@ -36,6 +54,7 @@ exports.getAllHistories = async (req, res) => {
                 }
             })
         }
+
         res.status(404).send("No History found");
     } catch (error) {
         console.log(error)
@@ -45,7 +64,7 @@ exports.getAllHistories = async (req, res) => {
 
 exports.getAllOrderedItems = async (req, res) => {
     try {
-        let queriedHistories = new QueryMethod(OrderedItems.find(), req.query)
+        let queriedHistories = new QueryMethod(OrderedItems.find().populate("userId", "fullName address phoneNumber email"), req.query)
           .sort()
           .filter()
           .limit()
@@ -74,10 +93,7 @@ exports.deleteHistory = async (req, res) => {
             await OrderedItems.findByIdAndDelete(req.params.id);
             return res.status(204).send();
         } else{
-            return res.status(404).send({
-                status : false,
-                message : "History cannot be fetched"
-            })
+            return res.status(400).send(`There is no order history with the id ${req.params.id}`);
         }
     }catch (err) {
         const errors = handleError(err)

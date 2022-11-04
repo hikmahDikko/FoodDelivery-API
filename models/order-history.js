@@ -18,22 +18,12 @@ const orderedItemsSchema = new mongoose.Schema({
         type : Number,
         default : 0
     },
-    comments : [{
+    reviews : [{
         type : ObjectID,
-        ref : "Comment"
+        ref : "Review"
     }]
 },{
     timestamps : true
-});
-
-orderedItemsSchema.pre(/^find/, function (next) {
-    this.populate([
-        {
-        path: "userId",
-        select: "fullName address phoneNumber email",
-        }
-    ]);
-    next();
 });
 
 orderedItemsSchema.pre(/^find/, function (next) {
@@ -59,13 +49,13 @@ orderedItemsSchema.pre(/^find/, function (next) {
 orderedItemsSchema.pre(/^find/, function (next) {
     this.populate([
         {
-        path: "comments",
-        select: "ratings review",
+        path: "reviews",
+        select: "rating review",
         }
     ]);
     next();
 });
 
-const OrderedItemsSchema = mongoose.model(" OrderedItemsSchema", orderedItemsSchema);
+const OrderedItems = mongoose.model("OrderedItems", orderedItemsSchema);
 
-module.exports =   OrderedItemsSchema;
+module.exports =   OrderedItems;

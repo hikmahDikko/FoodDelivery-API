@@ -33,11 +33,6 @@ exports.signUp = async (req, res) => {
              
             const token = createToken(user._id);
             res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000 })
-            await new Token({
-                userId: user._id,
-                token: token,
-                createdAt: Date.now(),
-            }).save();
             return res.status(201).json({
                 status : "success",
                 token,

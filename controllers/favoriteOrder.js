@@ -59,7 +59,7 @@ exports.checkoutFavOrder = async (req, res) => {
 
                 let mailOptions = {
                     from : process.env.HOST_EMAIL,
-                    to : `${process.env.VENDORS_EMAIL}, ${user.email}`,
+                    to : process.env.VENDORS_EMAIL,
                     subject : "Orders",
                     text : "Ordered favorite-items are as follows " + '\n' + favOrder
                 }
@@ -75,7 +75,6 @@ exports.checkoutFavOrder = async (req, res) => {
                 await OrderedItems.create({
                     userId: req.user.id,
                     FavoriteId: [...favOrder.cartId],
-                    //label : 'Favorite cart',
                     totalAmount: favOrder.totalAmount
                 })
 

@@ -24,16 +24,6 @@ const FavOrderSchema = new mongoose.Schema({
 FavOrderSchema.pre(/^find/, function (next) {
     this.populate([
         {
-        path: "userId",
-        select: "fullName address phoneNumber email",
-        }
-    ]);
-    next();
-});
-
-FavOrderSchema.pre(/^find/, function (next) {
-    this.populate([
-        {
         path: "cartId",
         select: "foodName quantity amount",
         }

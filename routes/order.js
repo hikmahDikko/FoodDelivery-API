@@ -4,10 +4,10 @@ const { auth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getAllOrders, checkoutOrder } = orderController;
+const { getAllOrders, checkOutOrder } = orderController;
 
 router.get("/", auth, getAllOrders);
 
-router.post("/checkout", auth, checkoutOrder);
+router.post("/checkout", auth, checkOutOrder);
 
 module.exports = router;

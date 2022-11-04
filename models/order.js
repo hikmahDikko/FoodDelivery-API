@@ -24,16 +24,6 @@ const orderSchema = new mongoose.Schema({
 orderSchema.pre(/^find/, function (next) {
     this.populate([
         {
-        path: "userId",
-        select: "fullName address phoneNumber email",
-        }
-    ]);
-    next();
-});
-
-orderSchema.pre(/^find/, function (next) {
-    this.populate([
-        {
         path: "cartId",
         select: "foodName quantity amount",
         }

@@ -10,18 +10,20 @@ exports.createCart = async (req, res) => {
         const userId = req.user.id;
         
         const food = await Food.findById(foodId);
-        unitPrice = food.price;
         
         if (!food) {
             return res.status(400).send(`The food ${food.name} is not available`)
         }
+        
+        unitPrice = food.price;
         deliveryFee = 500;
         amount = quantity * unitPrice;
         isCompleted = false;
-
-        const cartt = await Cart.findOne({isCompleted : false});
         let cartItem;
-        if(!cartt) {
+        
+        const cart = await Cart.findOne({foodId, isCompleted: false});
+
+        if(!cart) {
             cartItem = await Cart.create({
                 userId,
                 foodId,
@@ -31,6 +33,7 @@ exports.createCart = async (req, res) => {
                 unitPrice,
                 amount
             });
+            await cartItem.$set({isCompleted : false})
             const myOrder = await Order.findOne({ userId: req.user.id });
                 if (!myOrder) {
                     await Order.create({
@@ -53,14 +56,13 @@ exports.createCart = async (req, res) => {
                         { new: true }
                     );
                 }
-                res.status(200).json({
+                return res.status(200).json({
                     status: "success",
                     data: { cartItem },
                 });
             
-        }else if(cartt || cartt.foodId === req.body.foodId ) {
-                
-            res.status(200).send(`${food.name} already exist in the cart, Please try update the item in the cart`)
+        }else if(cart.foodId.toString() === req.body.foodId) {
+            return res.status(200).send(`${food.name} already exist in the cart, Please try update the item in the cart`)
         }
     } catch (error) {
         console.log(error)

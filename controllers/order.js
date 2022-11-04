@@ -9,12 +9,12 @@ fs = require('fs');
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
 //Checkout ordered foods
-exports.checkoutOrder = async (req, res) => {
+exports.checkOutOrder = async (req, res) => {
     try {
         const userId = req.user._id;
         let payload = req.body;
         
-        let order = await Order.findOne({userId});
+        let order = await Order.findOne({userId}).populate("userId", "fullname email phoneNumber address");
         
         let user = req.user;
         
@@ -60,7 +60,7 @@ exports.checkoutOrder = async (req, res) => {
 
                 let mailOptions = {
                     from : process.env.HOST_EMAIL,
-                    to : `${process.env.VENDORS_EMAIL}`,
+                    to : process.env.VENDORS_EMAIL,
                     subject : "Orders",
                     text : "Ordered items are as follows " + '\n' + order
                 }
