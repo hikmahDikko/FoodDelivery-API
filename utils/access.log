@@ -2629,3 +2629,4 @@
 [0mGET /api/v1/order-histories [32m200[0m 619.373 ms - 425[0m
 [0mDELETE /api/v1/reviews/636570accb55aa79b5ac720c [32m204[0m 571.255 ms - -[0m
 [0mGET /api/v1/reviews [32m200[0m 423.817 ms - 42[0m
+[0mPOST /api/v1/reviews/63656ea7d9d7ed29570940f7 [32m201[0m 6648.952 ms - 371[0m

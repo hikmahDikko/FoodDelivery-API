@@ -7,7 +7,10 @@ const reviewSchema = new mongoose.Schema({
         ref : "User",
     },
     rating : {
-        type : Number
+        type : Number,
+        min : 1,
+        max : 5,
+        default : 1
     },
     review : {
         type : String
