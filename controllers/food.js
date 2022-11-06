@@ -25,8 +25,6 @@ const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
-  } else {
-    res.status(400).send("Please upload only an image file");
   }
 };
 
@@ -69,7 +67,7 @@ exports.uploadFood = async (req, res) => {
         req.body.vendor = req.user._id;
         const food = await Food.create(req.body);
         return res.status(200).send({
-            status : true,
+            status : "success",
             meassage : "Successfully uploaded a food",
             data : {
                 food
@@ -127,7 +125,7 @@ exports.updateFood = async (req, res) => {
         if (!food) {
           return res.status(400).json({
             status: "fail",
-            message: `There is no product from the vendor with the ID ${req.params.id}`,
+            message: `There is no food from the vendor with the ID ${req.params.id}`,
           });
         }
         const description = req.body.description === undefined ? food.description : req.body.description;

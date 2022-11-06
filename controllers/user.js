@@ -57,7 +57,7 @@ exports.updateUser = async (req, res) => {
         const phoneNumber =
           req.body.phoneNumber === undefined ? user.phoneNumber : req.body.phoneNumber;
         const address =
-          req.body.address === undefined ? user.address : req.body.paddress;
+          req.body.address === undefined ? user.address : req.body.address;
         const password =
           req.body.password === undefined ? user.password : req.body.password;
         const update = { fullName, email, password, address, phoneNumber };

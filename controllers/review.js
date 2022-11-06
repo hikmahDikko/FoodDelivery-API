@@ -53,7 +53,7 @@ exports.getOneReview = async (req, res) => {
 
 exports.getAllReviews = async (req, res) => {
     try {
-        let queriedReviews = new QueryMethod(Review.find(), req.query)
+        let queriedReviews = new QueryMethod(Review.find().populate("userId", "fullName"), req.query)
           .sort()
           .filter()
           .limit()
