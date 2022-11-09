@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config({path : "./config.env"});
-//const cors = require("cors");
 const fs = require("fs");
 const morgan = require("morgan");
 const path = require("path");
@@ -17,6 +16,7 @@ const orderHistory = require("./routes/order-history.js");
 const review = require("./routes/review");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
 
 app.use(express.json());
 
