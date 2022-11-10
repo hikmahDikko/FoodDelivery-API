@@ -1,7 +1,15 @@
 const Food = require("../models/food");
 const multer = require("multer");
-const sharp = require("sharp");
 const QueryMethod = require("../utils/query");
+const cloudinary = require("cloudinary").v2;
+const dotenv = require("dotenv");
+dotenv.config({path : "./config.env"});
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_USER_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
+});
 
 //handle errors
 const handleError = (err) => {
@@ -20,7 +28,7 @@ const handleError = (err) => {
 };
 
 //Upload a food image
-const multerStorage = multer.memoryStorage();
+const multerStorage = multer.diskStorage();
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -38,25 +46,13 @@ exports.uploadFoodImage = uploadImage.single("foodImage");
 
 exports.resizeImage = async (req, res, next) => {
     if (req.file) {
-      let timeStamp = Date.now();
-      let id = req.params.id;
-      let foodName;
-      if (id) {
-        const food = await Food.findById(id);
-        if (!food) {
-          return res.status(400).send(`There is no food with the ${req.params.id}`);
-        }
-        foodName = `${food.name}-${timeStamp}.jpeg`;
-      }
-      foodName = `${req.body.name}-${timeStamp}.jpeg`;
-      req.body.foodImage = foodName;
+        let foodImage;
+    
+        const result = await cloudinary.uploader.upload(req.file.path).catch((err) => console.log(err)); 
   
-      await sharp(req.file.buffer)
-        .resize(320, 240)
-        .toFormat("jpeg")
-        .jpeg({ quality: 80 })
-        .toFile(`public/food/img/${foodName}`);
-    }
+        foodImage = result.url;
+        req.body.foodImage = foodImage;
+      }
   
     next();
   };
