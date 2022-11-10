@@ -28,7 +28,7 @@ const handleError = (err) => {
 };
 
 //Upload a food image
-const multerStorage = multer.diskStorage();
+const multerStorage = multer.diskStorage({});
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
