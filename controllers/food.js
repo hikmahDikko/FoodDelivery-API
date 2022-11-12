@@ -52,6 +52,7 @@ exports.resizeImage = async (req, res, next) => {
                 public_id : "Food Menu",
                 width : 500,
                 height : 500,
+                crop : "fill"
             }).catch((err) => console.log(err)); 
   
         foodImage = result.url;
