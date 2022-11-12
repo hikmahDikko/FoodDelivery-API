@@ -4,13 +4,11 @@ const { isEmail } = require("validator");
 const userSchema = new mongoose.Schema({
     fullName : {
         type : String,
-        //required : [true, "Please enter a Fullname"],
         minlength : [6, "Fullname should have more than 6 characters"],
         maxlength : [30, "Fullname should be more than 30 characters"]
     },
     phoneNumber : {
         type : String,
-        //required : [true, "Please enter your phone number"],
     },
     email : {
         type : String,
@@ -21,7 +19,9 @@ const userSchema = new mongoose.Schema({
     },
     address : {
         type : String,
-        //required : [true, "Please enter your phone address"]
+    },
+    profileImage :{
+        type : String,
     },
     password : {
         type : String,

@@ -4,14 +4,14 @@ const { auth, checkUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const { getOneUser, getAllUsers, deleteUser, updateUser } = userController;
+const { getOneUser, getAllUsers, deleteUser, uploadProfileImage, resizeImage, updateUser } = userController;
 
 router.get("/", auth, checkUser("admin"), getAllUsers);
 
 router
     .route("/:id")
     .get(auth, getOneUser)
-    .patch(auth, updateUser)
+    .patch(auth, uploadProfileImage, resizeImage, updateUser)
     .delete(auth, checkUser("admin"), deleteUser);
 
 module.exports = router;
