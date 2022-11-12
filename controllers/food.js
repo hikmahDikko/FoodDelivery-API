@@ -50,8 +50,8 @@ exports.resizeImage = async (req, res, next) => {
     
         const result = await cloudinary.uploader.upload(req.file.path, {
                 public_id : "Food Menu",
-                // width : 500,
-                // height : 500,
+                width : 500,
+                height : 500,
             }).catch((err) => console.log(err)); 
   
         foodImage = result.url;
