@@ -49,7 +49,7 @@ exports.resizeImage = async (req, res, next) => {
         let foodImage;
     
         const result = await cloudinary.uploader.upload(req.file.path, {
-                public_id : "Food Menu",
+                public_id : `${req.body.name}_Image`,
                 width : 2000,
                 height : 1500
             }).catch((err) => console.log(err)); 
