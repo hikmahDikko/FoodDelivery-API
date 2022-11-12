@@ -14,7 +14,7 @@ cloudinary.config({
 //handle errors
 const handleError = (err) => {
     console.log(err.message);
-    let errors = { vendor : "", name : "", description : "", price : "", quantity : "", foodImage : "", category : ""};
+    let errors = { vendor : "", name : "", price : "", quantity : "", foodImage : "", category : ""};
     
     //validate errors
     if(err.message.includes('Food validation failed')) {
@@ -48,7 +48,11 @@ exports.resizeImage = async (req, res, next) => {
     if (req.file) {
         let foodImage;
     
-        const result = await cloudinary.uploader.upload(req.file.path).catch((err) => console.log(err)); 
+        const result = await cloudinary.uploader.upload(req.file.path, {
+                public_id : "Food Menu",
+                width : 500,
+                height : 500,
+            }).catch((err) => console.log(err)); 
   
         foodImage = result.url;
         req.body.foodImage = foodImage;

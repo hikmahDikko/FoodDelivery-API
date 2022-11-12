@@ -10,10 +10,6 @@ const foodSchema = new mongoose.Schema({
         type : String,
         required : [true, "Please enter the food name"],
     },
-    description : {
-        type : String,
-        required : [true, "Please enter the food description"]
-    },
     price : {
         type : Number,
         required : [true, "Please enter the amount of the food"]
